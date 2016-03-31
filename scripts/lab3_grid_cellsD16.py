@@ -8,7 +8,7 @@ from nav_msgs.msg import Odometry, OccupancyGrid
 from kobuki_msgs.msg import BumperEvent
 import tf
 import numpy
-import math 
+import math
 import rospy, tf, numpy, math
 
 
@@ -70,7 +70,7 @@ def publishCells(grid):
     k=0
     cells = GridCells()
     cells.header.frame_id = 'map'
-    cells.cell_width = resolution 
+    cells.cell_width = resolution
     cells.cell_height = resolution
 
     for i in range(1,height): #height should be set to hieght of grid
@@ -84,14 +84,14 @@ def publishCells(grid):
                 point.y=(i*resolution)+offsetY - (.5 * resolution) # added secondary offset ... Magic ?
                 point.z=0
                 cells.cells.append(point)
-    pub.publish(cells)           
+    pub.publish(cells)
 
 #Main handler of the project
 def run():
     global pub
     rospy.init_node('lab3')
     sub = rospy.Subscriber("/map", OccupancyGrid, mapCallBack)
-    pub = rospy.Publisher("/map_check", GridCells, queue_size=1)  
+    pub = rospy.Publisher("/map_check", GridCells, queue_size=1)
     pubpath = rospy.Publisher("/path", GridCells, queue_size=1) # you can use other types if desired
     pubway = rospy.Publisher("/waypoints", GridCells, queue_size=1)
     goal_sub = rospy.Subscriber('move_base_simple/goal', PoseStamped, readGoal, queue_size=1) #change topic for best results
@@ -104,9 +104,8 @@ def run():
 
     while (1 and not rospy.is_shutdown()):
         publishCells(mapData) #publishing map data every 2 seconds
-        rospy.sleep(2)  
+        rospy.sleep(2)
         print("Complete")
-    
 
 
 if __name__ == '__main__':
