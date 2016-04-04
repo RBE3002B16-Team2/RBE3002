@@ -1,0 +1,2 @@
+#!/bin/bash
+rosrun map_server map_server ./stagemaps/simple_map.yaml

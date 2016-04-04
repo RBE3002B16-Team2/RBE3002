@@ -36,6 +36,7 @@ def mapCallBack(data):
 
 
 def readGoal(goal):
+    global start_pose
     goal_pose = goal.pose
     aStar(start_pose, goal_pose)
     print goal.pose
@@ -49,7 +50,10 @@ def readStart(startPos):
 
 
 def aStar(start, goal):
-    global navigable_nodes
+    global navigable_gridpos
+    global pubpath
+    global pubopen
+    global pubclose
     openNodes = {}
     closedNodes = {}
 
@@ -67,7 +71,9 @@ def aStar(start, goal):
             if i[1].getCost() < current[1].getCost():
                 current = i
         if current[0] == goalgridpos:
-            return getPath(current[1])
+            path = getPath(current[1])
+            publishPoints(pubpath,path)
+            return path
 
         openNodes.pop(current[0])
         closedNodes[current[0]] = current[1]
@@ -115,7 +121,7 @@ def getPath(end_node):
     path = []
     if end_node.parent is not None:
         path = getPath(end_node.parent)
-    path.append(end_node)
+    path.append(end_node.gridpos)
     return path
 
 
@@ -131,10 +137,10 @@ def pose2gridpos(pose):
 
 def publishCells(grid):
     global pub
-    global navigable_nodes
+    global navigable_gridpos
     print "publishing"
 
-    navigable_nodes=[]
+    navigable_gridpos=[]
 
     # resolution and offset of the map
     k = 0
@@ -149,7 +155,7 @@ def publishCells(grid):
             k = k + 1
             # print k # used for debugging
             if (grid[k] < 50):
-                navigable_nodes.append((j,i))
+                navigable_gridpos.append((j,i))
             if (grid[k] == 100):
                 point = Point()
                 # added secondary offset
@@ -161,20 +167,50 @@ def publishCells(grid):
     pub.publish(cells)
 
 
+def publishPoints(pub,listofgridpos):
+    global width
+    global height
+    global resolution
+    global offsetX
+    global offsetY
+
+    print "publishing"
+    # resolution and offset of the map
+    k = 0
+    cells = GridCells()
+    cells.header.frame_id = 'map'
+    cells.cell_width = resolution
+    cells.cell_height = resolution
+
+    for g in listofgridpos:
+        point = Point()
+        # added secondary offset
+        point.x = (g[0] * resolution) + offsetX + (1.5 * resolution)
+        # added secondary offset ... Magic ?
+        point.y = (g[1] * resolution) + offsetY - (.5 * resolution)
+        point.z = 0
+        cells.cells.append(point)
+
+    pub.publish(cells)
 # Main handler of the project
 
 
 def run():
     global pub
+    global pubpath
+    global pubopen
+    global pubclose
     rospy.init_node('lab3')
     sub = rospy.Subscriber("/map", OccupancyGrid, mapCallBack)
     pub = rospy.Publisher("/map_check", GridCells, queue_size=1)
     # you can use other types if desired
     pubpath = rospy.Publisher("/path", GridCells, queue_size=1)
+    pubopen = rospy.Publisher("/opennodes", GridCells, queue_size=1)
+    pubclose = rospy.Publisher("/closednodes", GridCells, queue_size=1)
     pubway = rospy.Publisher("/waypoints", GridCells, queue_size=1)
     # change topic for best results
     goal_sub = rospy.Subscriber(
-        'move_base_simple/goal', PoseStamped, readGoal, queue_size=1)
+        'move_base_simple/goalrbe', PoseStamped, readGoal, queue_size=1)
     # change topic for best results
     goal_sub = rospy.Subscriber(
         'initialpose', PoseWithCovarianceStamped, readStart, queue_size=1)

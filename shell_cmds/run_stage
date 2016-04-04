@@ -1,0 +1,4 @@
+#!/bin/bash
+export TURTLEBOT_STAGE_WORLD_FILE=$1
+export TURTLEBOT_STAGE_MAP_FILE=$2
+roslaunch turtlebot_stage turtlebot_in_stage.launch
