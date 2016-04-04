@@ -49,6 +49,7 @@ def readStart(startPos):
 
 
 def aStar(start, goal):
+    global navigable_nodes
     openNodes = {}
     closedNodes = {}
 
@@ -60,6 +61,7 @@ def aStar(start, goal):
         None, 0, gethcost(startgridpos, goalgridpos), startgridpos)
 
     while len(openNodes) > 0:
+        # get the node with lowest cost
         current = next(openNodes.iteritems())
         for i in openNodes.iteritems():
             if i[1].getCost() < current[1].getCost():
@@ -70,12 +72,13 @@ def aStar(start, goal):
         openNodes.pop(current[0])
         closedNodes[current[0]] = current[1]
 
-        for n in getNeighbors(current):  # TODO
-            if n.gridpos in closedNodes:
+        for n in getNeighbors(current[0], navigable_gridpos):  # TODO
+            newNode = AStarNode(
+                current, getgcost(current[0], n), gethcost(n, goalgridpos), n)
+            if n in closedNodes:
                 continue
-            if n.gridpos not in openNodes or n.g_cost < closedNodes[n.gridpos].g_cost:
-                openNodes[n.gridpos] = AStarNode(
-                    current, 1, gethcost(n.gridpos, goalgridpos), n.gridpos)
+            if n not in openNodes or openNodes[n].g_cost < newNode.g_cost:
+                openNodes[n.gridpos] = newNode
     raise Exception('no path found')
 
     # create a new instance of the map
@@ -88,7 +91,16 @@ def aStar(start, goal):
 
     # Publish points
 
+
 # publishes map to rviz using gridcells type
+def getNeighbors(me_gridpos, navigable_gridpos):
+    assert me_gridpos in navigable_gridpos
+    offset = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
+    neighbor_pos = []
+    for o in offset:
+        n_pos = (me_gridpos[0] + o[0], me_gridpos[1] + o[1])
+        if n_pos in navigable_gridpos:
+            neighbor_pos.append(n_pos)
 
 
 def gethcost(fr, to):
@@ -96,7 +108,7 @@ def gethcost(fr, to):
 
 
 def getgcost(fr, to):
-    math.sqrt((to[0] - fr[0])**2 + (to[1] - fr[1])**2)
+    math.sqrt((to[0] - fr[0]) ** 2 + (to[1] - fr[1]) ** 2)
 
 
 def getPath(end_node):
@@ -119,7 +131,10 @@ def pose2gridpos(pose):
 
 def publishCells(grid):
     global pub
+    global navigable_nodes
     print "publishing"
+
+    navigable_nodes=[]
 
     # resolution and offset of the map
     k = 0
@@ -133,6 +148,8 @@ def publishCells(grid):
         for j in range(1, width):  # width should be set to width of grid
             k = k + 1
             # print k # used for debugging
+            if (grid[k] < 50):
+                navigable_nodes.append((j,i))
             if (grid[k] == 100):
                 point = Point()
                 # added secondary offset
@@ -142,6 +159,7 @@ def publishCells(grid):
                 point.z = 0
                 cells.cells.append(point)
     pub.publish(cells)
+
 
 # Main handler of the project
 
