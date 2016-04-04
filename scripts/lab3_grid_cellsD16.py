@@ -4,7 +4,7 @@ import rospy
 from nav_msgs.msg import GridCells
 from std_msgs.msg import String
 from geometry_msgs.msg import Twist, Point, Pose, PoseStamped, PoseWithCovarianceStamped
-from nav_msgs.msg import Odometry, OccupancyGrid
+from nav_msgs.msg import Odometry, OccupancyGrid, Path
 from kobuki_msgs.msg import BumperEvent
 import tf
 import numpy
@@ -156,12 +156,7 @@ def publishCells(grid):
             if (grid[k] < 50):
                 navigable_gridpos.append((j,i))
             if (grid[k] == 100):
-                point = Point()
-                # added secondary offset
-                point.x = (j * resolution) + offsetX + (1.5 * resolution)
-                # added secondary offset ... Magic ?
-                point.y = (i * resolution) + offsetY - (0.5 * resolution)
-                point.z = 0
+                point = getPoint((j,i))
                 cells.cells.append(point)
     pub.publish(cells)
 
@@ -181,16 +176,75 @@ def publishPoints(pub,listofgridpos):
     cells.cell_height = resolution
 
     for g in listofgridpos:
-        point = Point()
-        # added secondary offset
-        point.x = (g[0] * resolution) + offsetX + (1.5 * resolution)
-        # added secondary offset ... Magic ?
-        point.y = (g[1] * resolution) + offsetY - (.5 * resolution)
-        point.z = 0
+        point = getPoint(g)
         cells.cells.append(point)
 
     pub.publish(cells)
 # Main handler of the project
+
+def getPoint(gridpos):
+    global width
+    global height
+    global resolution
+    global offsetX
+    global offsetY
+
+    point = Point()
+    # added secondary offset
+    point.x = (g[0] * resolution) + offsetX + (1.5 * resolution)
+    # added secondary offset ... Magic ?
+    point.y = (g[1] * resolution) + offsetY - (.5 * resolution)
+    point.z = 0
+
+    return point
+
+
+
+
+def getDirection(fr, to):
+    dx = to[1] - fr[1]
+    dy = to[1] - fr[1]
+    return math.atan2(dy,dx)
+    
+    '''
+    if dx > 0 and dy > 0:
+        return 0
+    if dx > 0 and dy == 0:
+        return 1
+    if dx > 0 and dy < 0:
+        return 2
+
+    if dx == 0 and dy > 0:
+        return 3
+    if dx == 0 and dy == 0:
+        return 4
+    if dx == 0 and dy < 0:
+        return 5
+
+    if dx < 0 and dy > 0:
+        return 6
+    if dx < 0 and dy == 0:
+        return 7
+    if dx < 0 and dy < 0:
+        return 8
+    '''
+
+
+def getWaypoints(list_of_gridpos):
+    wp = Path()
+    wp.header.frame_id = 'map'
+    poses = []
+    lastdirection = -1
+    newPose = PoseStamped()
+    newPose.header.frame_id = 'map'
+    newPose.pose = Pose()
+
+    point = getPoint(list_of_gridpos[0])
+    nowPose.pose.position = point
+    for i in range(1, len(list_of_gridpos):
+        if list_of_gridpo 
+        wp.poses = poses
+
 
 
 def run():
