@@ -39,14 +39,15 @@ def readGoal(goal):
     global start_pose
     goal_pose = goal.pose
     aStar(start_pose, goal_pose)
-    print goal.pose
+    print goal_pose
     # Start Astar
 
 
 def readStart(startPos):
     global start_pose
-    start_pose = startPos.pose
-    print startPos.pose.pose
+    print 'start pose received'
+    start_pose = startPos.pose.pose
+    print startPos.pose
 
 
 def aStar(start, goal):
@@ -59,6 +60,11 @@ def aStar(start, goal):
 
     goalgridpos = pose2gridpos(goal)
     startgridpos = pose2gridpos(start)
+
+    print goalgridpos
+    print startgridpos
+
+    print gethcost(startgridpos, goalgridpos)
 
     # dump in the first node
     openNodes[pose2gridpos(start)] = AStarNode(
@@ -78,24 +84,17 @@ def aStar(start, goal):
         openNodes.pop(current[0])
         closedNodes[current[0]] = current[1]
 
-        for n in getNeighbors(current[0], navigable_gridpos):  # TODO
+        for n in getNeighbors(current[0], navigable_gridpos):
             newNode = AStarNode(
-                current, getgcost(current[0], n), gethcost(n, goalgridpos), n)
+                current[1], getgcost(current[0], n), gethcost(n, goalgridpos), n)
             if n in closedNodes:
                 continue
-            if n not in openNodes or openNodes[n].g_cost < newNode.g_cost:
-                openNodes[n.gridpos] = newNode
+            if n not in openNodes or openNodes[n].g_cost > newNode.g_cost:
+                openNodes[n] = newNode
+        publishPoints(pubopen,openNodes.keys())
+        publishPoints(pubclose,closedNodes.keys())
+
     raise Exception('no path found')
-
-    # create a new instance of the map
-
-    # generate a path to the start and end goals by searching through the
-    # neighbors, refer to aStar_explanied.py
-
-    # for each node in the path, process the nodes to generate GridCells and
-    # Path messages
-
-    # Publish points
 
 
 # publishes map to rviz using gridcells type
@@ -107,14 +106,15 @@ def getNeighbors(me_gridpos, navigable_gridpos):
         n_pos = (me_gridpos[0] + o[0], me_gridpos[1] + o[1])
         if n_pos in navigable_gridpos:
             neighbor_pos.append(n_pos)
+    return neighbor_pos
 
 
 def gethcost(fr, to):
-    math.abs(to[0] - fr[0]) + math.abs(to[1] - fr[1])
+    return abs(to[0] - fr[0]) + abs(to[1] - fr[1])
 
 
 def getgcost(fr, to):
-    math.sqrt((to[0] - fr[0]) ** 2 + (to[1] - fr[1]) ** 2)
+    return math.sqrt((to[0] - fr[0]) ** 2 + (to[1] - fr[1]) ** 2)
 
 
 def getPath(end_node):
@@ -138,7 +138,6 @@ def pose2gridpos(pose):
 def publishCells(grid):
     global pub
     global navigable_gridpos
-    print "publishing"
 
     navigable_gridpos=[]
 
@@ -161,7 +160,7 @@ def publishCells(grid):
                 # added secondary offset
                 point.x = (j * resolution) + offsetX + (1.5 * resolution)
                 # added secondary offset ... Magic ?
-                point.y = (i * resolution) + offsetY - (.5 * resolution)
+                point.y = (i * resolution) + offsetY - (0.5 * resolution)
                 point.z = 0
                 cells.cells.append(point)
     pub.publish(cells)
@@ -174,7 +173,6 @@ def publishPoints(pub,listofgridpos):
     global offsetX
     global offsetY
 
-    print "publishing"
     # resolution and offset of the map
     k = 0
     cells = GridCells()
@@ -213,7 +211,7 @@ def run():
         'move_base_simple/goalrbe', PoseStamped, readGoal, queue_size=1)
     # change topic for best results
     goal_sub = rospy.Subscriber(
-        'initialpose', PoseWithCovarianceStamped, readStart, queue_size=1)
+        '/initialpose', PoseWithCovarianceStamped, readStart, queue_size=1)
 
     # wait a second for publisher, subscribers, and TF
     rospy.sleep(1)
@@ -221,7 +219,6 @@ def run():
     while (1 and not rospy.is_shutdown()):
         publishCells(mapData)  # publishing map data every 2 seconds
         rospy.sleep(2)
-        print("Complete")
 
 
 if __name__ == '__main__':
