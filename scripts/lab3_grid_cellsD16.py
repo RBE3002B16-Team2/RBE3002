@@ -15,6 +15,7 @@ import numpy
 import math
 from astar import AStarNode
 from move import Movement
+import copy
 
 
 # reads in global map
@@ -35,7 +36,7 @@ def mapCallBack(data):
     offsetY = data.info.origin.position.y
     print data.info
 
-
+# goal callback
 def readGoal(goal):
     global start_pose
     global goal_pose
@@ -44,7 +45,7 @@ def readGoal(goal):
     print goal_pose
     # Start Astar
 
-
+# start callback
 def readStart(startPos):
     global start_pose
     print 'start pose received'
@@ -66,8 +67,6 @@ def aStar(start, goal):
     print goalgridpos
     print startgridpos
 
-    print gethcost(startgridpos, goalgridpos)
-
     # dump in the first node
     openNodes[pose2gridpos(start)] = AStarNode(
         None, 0, gethcost(startgridpos, goalgridpos), startgridpos)
@@ -78,9 +77,11 @@ def aStar(start, goal):
         for i in openNodes.iteritems():
             if i[1].getCost() < current[1].getCost():
                 current = i
+
         if current[0] == goalgridpos:
             path = getPath(current[1])
-            publishPoints(pubpath,path)
+            publishPoints(pubpath, path)
+            publishWaypoints(path)
             return path
 
         openNodes.pop(current[0])
@@ -93,8 +94,8 @@ def aStar(start, goal):
                 continue
             if n not in openNodes or openNodes[n].g_cost > newNode.g_cost:
                 openNodes[n] = newNode
-        publishPoints(pubopen,openNodes.keys())
-        publishPoints(pubclose,closedNodes.keys())
+        publishPoints(pubopen, openNodes.keys())
+        publishPoints(pubclose, closedNodes.keys())
 
     raise Exception('no path found')
 
@@ -110,15 +111,15 @@ def getNeighbors(me_gridpos, navigable_gridpos):
             neighbor_pos.append(n_pos)
     return neighbor_pos
 
-
+# fr and to are tuples (x,y)
 def gethcost(fr, to):
     return abs(to[0] - fr[0]) + abs(to[1] - fr[1])
 
-
+# fr and to are tuples (x,y)
 def getgcost(fr, to):
     return math.sqrt((to[0] - fr[0]) ** 2 + (to[1] - fr[1]) ** 2)
 
-
+# end_node: type of AStarNode. returns list of tuples (x,y) in gridpos
 def getPath(end_node):
     path = []
     if end_node.parent is not None:
@@ -126,7 +127,7 @@ def getPath(end_node):
     path.append(end_node.gridpos)
     return path
 
-
+# convert from pose to position in grid
 def pose2gridpos(pose):
     global resolution
     global offsetX
@@ -136,12 +137,12 @@ def pose2gridpos(pose):
     gridy = int((pose.position.y - offsetY + (.5 * resolution)) / resolution)
     return (gridx, gridy)
 
-
+# useless
 def publishCells(grid):
     global pub
     global navigable_gridpos
 
-    navigable_gridpos=[]
+    navigable_gridpos = []
 
     # resolution and offset of the map
     k = 0
@@ -156,22 +157,20 @@ def publishCells(grid):
             k = k + 1
             # print k # used for debugging
             if (grid[k] < 50):
-                navigable_gridpos.append((j,i))
+                navigable_gridpos.append((j, i))
             if (grid[k] == 100):
-                point = getPoint((j,i))
+                point = getPoint((j, i))
                 cells.cells.append(point)
     pub.publish(cells)
 
-
-def publishPoints(pub,listofgridpos):
+# publish a gridcell to pub using points in a list of (x,y) gridpos
+def publishPoints(pub, listofgridpos):
     global width
     global height
     global resolution
     global offsetX
     global offsetY
 
-    # resolution and offset of the map
-    k = 0
     cells = GridCells()
     cells.header.frame_id = 'map'
     cells.cell_width = resolution
@@ -182,8 +181,9 @@ def publishPoints(pub,listofgridpos):
         cells.cells.append(point)
 
     pub.publish(cells)
-# Main handler of the project
 
+
+# convert from grid position (x,y) to real world coordinate. return a Point.
 def getPoint(gridpos):
     global width
     global height
@@ -193,66 +193,47 @@ def getPoint(gridpos):
 
     point = Point()
     # added secondary offset
-    point.x = (g[0] * resolution) + offsetX + (1.5 * resolution)
+    point.x = (gridpos[0] * resolution) + offsetX + (1.5 * resolution)
     # added secondary offset ... Magic ?
-    point.y = (g[1] * resolution) + offsetY - (.5 * resolution)
+    point.y = (gridpos[1] * resolution) + offsetY - (.5 * resolution)
     point.z = 0
 
     return point
 
 
-
-
 def getDirection(fr, to):
-    dx = to[1] - fr[1]
+    dx = to[0] - fr[0]
     dy = to[1] - fr[1]
-    return math.atan2(dy,dx)
+    return math.atan2(dy, dx)
 
-    '''
-    if dx > 0 and dy > 0:
-        return 0
-    if dx > 0 and dy == 0:
-        return 1
-    if dx > 0 and dy < 0:
-        return 2
-
-    if dx == 0 and dy > 0:
-        return 3
-    if dx == 0 and dy == 0:
-        return 4
-    if dx == 0 and dy < 0:
-        return 5
-
-    if dx < 0 and dy > 0:
-        return 6
-    if dx < 0 and dy == 0:
-        return 7
-    if dx < 0 and dy < 0:
-        return 8
-    '''
-
-
-def getWaypoints(list_of_gridpos):
+# generate a Path from a list of gridpos (x,y)
+def publishWaypoints(list_of_gridpos):
     global goal_pose
+    global pubrealpath
     wp = Path()
     wp.header.frame_id = 'map'
     poses = []
     lastdirection = -999
-    for i in range(0, len(list_of_gridpos)-1):
-        direction = getDirection(list_of_gridpos[i],list_of_gridpos[i+1])
+    for i in range(0, len(list_of_gridpos) - 1):
+        direction = getDirection(list_of_gridpos[i], list_of_gridpos[i + 1])
         if direction != lastdirection:
+            lastdirection = copy.deepcopy(direction)
             newPose = PoseStamped()
             newPose.header.frame_id = 'map'
             newPose.pose = Pose()
             newPose.pose.position = getPoint(list_of_gridpos[i])
-            newPose.pose.orientation =  #TODO: get quaternion from euler
+            quaternion = tf.transformations.quaternion_from_euler(0, 0, direction)
+            newPose.pose.orientation.x = quaternion[0]
+            newPose.pose.orientation.y = quaternion[1]
+            newPose.pose.orientation.z = quaternion[2]
+            newPose.pose.orientation.w = quaternion[3]
             poses.append(newPose)
-            lastdirection = direction
     newPose = PoseStamped()
     newPose.header.frame_id = 'map'
     newPose.pose = goal_pose
     poses.append(newPose)
     wp.poses = poses
+    pubrealpath.publish(wp)
     return wp
 
 def navToWaypoints(list_of_gridpos):
@@ -263,12 +244,12 @@ def navToWaypoints(list_of_gridpos):
         navToPose(waypoints[count].pose)
         count = count + 1
 
-
 def run():
     global pub
     global pubpath
     global pubopen
     global pubclose
+    global pubrealpath
     rospy.init_node('lab3')
     sub = rospy.Subscriber("/map", OccupancyGrid, mapCallBack)
     pub = rospy.Publisher("/map_check", GridCells, queue_size=1)
@@ -277,6 +258,7 @@ def run():
     pubopen = rospy.Publisher("/opennodes", GridCells, queue_size=1)
     pubclose = rospy.Publisher("/closednodes", GridCells, queue_size=1)
     pubway = rospy.Publisher("/waypoints", GridCells, queue_size=1)
+    pubrealpath = rospy.Publisher("/realpath", Path, queue_size=1)
     # change topic for best results
     goal_sub = rospy.Subscriber(
         'move_base_simple/goalrbe', PoseStamped, readGoal, queue_size=1)
