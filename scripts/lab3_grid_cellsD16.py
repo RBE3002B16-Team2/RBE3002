@@ -37,6 +37,7 @@ def mapCallBack(data):
 
 def readGoal(goal):
     global start_pose
+    global goal_pose
     goal_pose = goal.pose
     aStar(start_pose, goal_pose)
     print goal_pose
@@ -205,7 +206,7 @@ def getDirection(fr, to):
     dx = to[1] - fr[1]
     dy = to[1] - fr[1]
     return math.atan2(dy,dx)
-    
+
     '''
     if dx > 0 and dy > 0:
         return 0
@@ -231,19 +232,27 @@ def getDirection(fr, to):
 
 
 def getWaypoints(list_of_gridpos):
+    global goal_pose
     wp = Path()
     wp.header.frame_id = 'map'
     poses = []
-    lastdirection = -1
+    lastdirection = -999
+    for i in range(0, len(list_of_gridpos)-1):
+        direction = getDirection(list_of_gridpos[i],list_of_gridpos[i+1])
+        if direction != lastdirection:
+            newPose = PoseStamped()
+            newPose.header.frame_id = 'map'
+            newPose.pose = Pose()
+            newPose.pose.position = getPoint(list_of_gridpos[i])
+            newPose.pose.orientation =  #TODO: get quaternion from euler
+            poses.append(newPose)
+            lastdirection = direction
     newPose = PoseStamped()
     newPose.header.frame_id = 'map'
-    newPose.pose = Pose()
-
-    point = getPoint(list_of_gridpos[0])
-    nowPose.pose.position = point
-    for i in range(1, len(list_of_gridpos):
-        if list_of_gridpo 
-        wp.poses = poses
+    newPose.pose = goal_pose
+    poses.append(newPose)
+    wp.poses = poses
+    return wp
 
 
 
