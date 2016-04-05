@@ -14,6 +14,7 @@ import tf
 import numpy
 import math
 from astar import AStarNode
+from move import Movement
 
 
 # reads in global map
@@ -254,6 +255,13 @@ def getWaypoints(list_of_gridpos):
     wp.poses = poses
     return wp
 
+def navToWaypoints(list_of_gridpos):
+    waypoints = getWaypoints(list_of_gridpos)
+    
+    count = 0
+    while(len(waypoints) < count):
+        navToPose(waypoints[count].pose)
+        count = count + 1
 
 
 def run():
