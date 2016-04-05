@@ -14,7 +14,7 @@ import tf
 import numpy
 import math
 from astar import AStarNode
-
+import copy
 
 # reads in global map
 def mapCallBack(data):
@@ -80,6 +80,7 @@ def aStar(start, goal):
         if current[0] == goalgridpos:
             path = getPath(current[1])
             publishPoints(pubpath,path)
+            publishWaypoints(path)
             return path
 
         openNodes.pop(current[0])
@@ -192,9 +193,9 @@ def getPoint(gridpos):
 
     point = Point()
     # added secondary offset
-    point.x = (g[0] * resolution) + offsetX + (1.5 * resolution)
+    point.x = (gridpos[0] * resolution) + offsetX + (1.5 * resolution)
     # added secondary offset ... Magic ?
-    point.y = (g[1] * resolution) + offsetY - (.5 * resolution)
+    point.y = (gridpos[1] * resolution) + offsetY - (.5 * resolution)
     point.z = 0
 
     return point
@@ -203,36 +204,14 @@ def getPoint(gridpos):
 
 
 def getDirection(fr, to):
-    dx = to[1] - fr[1]
+    dx = to[0] - fr[0]
     dy = to[1] - fr[1]
     return math.atan2(dy,dx)
 
-    '''
-    if dx > 0 and dy > 0:
-        return 0
-    if dx > 0 and dy == 0:
-        return 1
-    if dx > 0 and dy < 0:
-        return 2
 
-    if dx == 0 and dy > 0:
-        return 3
-    if dx == 0 and dy == 0:
-        return 4
-    if dx == 0 and dy < 0:
-        return 5
-
-    if dx < 0 and dy > 0:
-        return 6
-    if dx < 0 and dy == 0:
-        return 7
-    if dx < 0 and dy < 0:
-        return 8
-    '''
-
-
-def getWaypoints(list_of_gridpos):
+def publishWaypoints(list_of_gridpos):
     global goal_pose
+    global pubrealpath
     wp = Path()
     wp.header.frame_id = 'map'
     poses = []
@@ -240,18 +219,23 @@ def getWaypoints(list_of_gridpos):
     for i in range(0, len(list_of_gridpos)-1):
         direction = getDirection(list_of_gridpos[i],list_of_gridpos[i+1])
         if direction != lastdirection:
+            lastdirection = copy.deepcopy(direction)
             newPose = PoseStamped()
             newPose.header.frame_id = 'map'
             newPose.pose = Pose()
             newPose.pose.position = getPoint(list_of_gridpos[i])
-            newPose.pose.orientation =  #TODO: get quaternion from euler
+            quaternion = tf.transformations.quaternion_from_euler(0,0,direction)
+            newPose.pose.orientation.x = quaternion[0]
+            newPose.pose.orientation.y = quaternion[1]
+            newPose.pose.orientation.z = quaternion[2]
+            newPose.pose.orientation.w = quaternion[3]
             poses.append(newPose)
-            lastdirection = direction
     newPose = PoseStamped()
     newPose.header.frame_id = 'map'
     newPose.pose = goal_pose
     poses.append(newPose)
     wp.poses = poses
+    pubrealpath.publish(wp)
     return wp
 
 
@@ -261,6 +245,7 @@ def run():
     global pubpath
     global pubopen
     global pubclose
+    global pubrealpath
     rospy.init_node('lab3')
     sub = rospy.Subscriber("/map", OccupancyGrid, mapCallBack)
     pub = rospy.Publisher("/map_check", GridCells, queue_size=1)
@@ -269,6 +254,7 @@ def run():
     pubopen = rospy.Publisher("/opennodes", GridCells, queue_size=1)
     pubclose = rospy.Publisher("/closednodes", GridCells, queue_size=1)
     pubway = rospy.Publisher("/waypoints", GridCells, queue_size=1)
+    pubrealpath = rospy.Publisher("/realpath",Path, queue_size=1)
     # change topic for best results
     goal_sub = rospy.Subscriber(
         'move_base_simple/goalrbe', PoseStamped, readGoal, queue_size=1)
