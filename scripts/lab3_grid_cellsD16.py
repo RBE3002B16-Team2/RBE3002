@@ -131,9 +131,9 @@ def pose2gridpos(pose):
     global resolution
     global offsetX
     global offsetY
-    gridx = int((pose.position.x - offsetX - (1.5 * resolution)) / resolution)
+    gridx = int((pose.position.x - offsetX - (.5 * resolution)) / resolution)
     # added secondary offset ... Magic ?
-    gridy = int((pose.position.y - offsetY + (.5 * resolution)) / resolution)
+    gridy = int((pose.position.y - offsetY - (.5 * resolution)) / resolution)
     return (gridx, gridy)
 
 # useless
@@ -150,16 +150,15 @@ def publishCells(grid):
     cells.cell_width = resolution
     cells.cell_height = resolution
 
-    for i in range(1, height):  # height should be set to hieght of grid
-        k = k + 1
-        for j in range(1, width):  # width should be set to width of grid
-            k = k + 1
+    for i in range(0, height):  # height should be set to hieght of grid
+        for j in range(0, width):  # width should be set to width of grid
             # print k # used for debugging
             if (grid[k] < 50):
                 navigable_gridpos.append((j, i))
             if (grid[k] == 100):
                 point = getPoint((j, i))
                 cells.cells.append(point)
+            k = k + 1
     pub.publish(cells)
 
 # publish a gridcell to pub using points in a list of (x,y) gridpos
@@ -192,9 +191,9 @@ def getPoint(gridpos):
 
     point = Point()
     # added secondary offset
-    point.x = (gridpos[0] * resolution) + offsetX + (1.5 * resolution)
+    point.x = (gridpos[0] * resolution) + offsetX + (.5 * resolution)
     # added secondary offset ... Magic ?
-    point.y = (gridpos[1] * resolution) + offsetY - (.5 * resolution)
+    point.y = (gridpos[1] * resolution) + offsetY + (.5 * resolution)
     point.z = 0
 
     return point
