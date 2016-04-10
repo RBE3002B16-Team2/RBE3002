@@ -275,6 +275,7 @@ if __name__ == '__main__':
     while not rospy.is_shutdown():
         #publishTwist(10,0)
         #print "running"
+        rospy.spin()
         rospy.sleep(0.5)
     
     print "Lab 2 complete!"
