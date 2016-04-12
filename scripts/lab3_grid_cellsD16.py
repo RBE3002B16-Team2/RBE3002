@@ -139,7 +139,17 @@ def pose2gridpos(pose):
 
 # useless
 def publishCells(grid):
+
+#begin test:
+    testGrid = grid
+ #   grid = expandObsticals(testGrid)
+    
+#end test:
+
+
+    
     global pub
+    row = ""
     global navigable_gridpos
 
     navigable_gridpos = []
@@ -153,14 +163,75 @@ def publishCells(grid):
 
     for i in range(0, height):  # height should be set to hieght of grid
         for j in range(0, width):  # width should be set to width of grid
-            # print k # used for debugging
+            #print grid[] # used for debugging
+            
             if (grid[k] < 50):
+                row = row + "    "
                 navigable_gridpos.append((j, i))
             if (grid[k] == 100):
+                row = row + " " + str (grid[k]);
                 point = getPoint((j, i))
                 cells.cells.append(point)
             k = k + 1
+        print "\n"+ row;
+        row = ""
     pub.publish(cells)
+    
+    
+    
+    
+def expandObsticals(grid):
+    row = ""
+    global navigable_gridpos
+    
+    
+    print len(grid)
+
+    navigable_gridpos = []
+    unnavigable_gridpos = []
+
+    # resolution and offset of the map
+    k = 0
+    cells = GridCells()
+    cells.header.frame_id = 'map'
+    cells.cell_width = resolution
+    cells.cell_height = resolution
+
+    for i in range(0, height):  # height should be set to hieght of grid
+        for j in range(0, width):  # width should be set to width of grid
+            #print grid[] # used for debugging
+            
+            
+            if (grid[k] < 50):
+                navigable_gridpos.append((j, i))
+            if (grid[k] == 100):
+                unnavigable_gridpos.append((j, i))
+                if(i > 1):
+                    point = getPoint((j, i-1))
+                    cells.cells.append(point)
+                    unnavigable_gridpos.append(point)
+                    
+                if(j > 1):
+                    point = getPoint((j-1, i))
+                    cells.cells.append(point)
+                    unnavigable_gridpos.append(point)
+                    
+                if(width > j):
+                    point = getPoint((j+1, i))
+                    cells.cells.append(point)
+                    unnavigable_gridpos.append(point)
+                if(height > i):
+                    point = getPoint((j, i+1))
+                    cells.cells.append(point)
+                    unnavigable_gridpos.append(point)
+                    
+            k = k + 1
+    print unnavigable_gridpos
+    return unnavigable_gridpos
+    
+
+
+
 
 # publish a gridcell to pub using points in a list of (x,y) gridpos
 def publishPoints(pub, listofgridpos):
@@ -204,6 +275,9 @@ def getDirection(fr, to):
     dx = to[0] - fr[0]
     dy = to[1] - fr[1]
     return math.atan2(dy, dx)
+    
+#def expandObsticals(inputMap)
+        
 
 # generate a Path from a list of gridpos (x,y)
 def publishWaypoints(list_of_gridpos):
@@ -265,6 +339,8 @@ def run():
 
     # wait a second for publisher, subscribers, and TF
     rospy.sleep(1)
+
+    print "Running Lab 3 Code..."
 
     while (1 and not rospy.is_shutdown()):
         publishCells(mapData)  # publishing map data every 2 seconds
