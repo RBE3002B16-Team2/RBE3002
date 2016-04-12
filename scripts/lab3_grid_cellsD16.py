@@ -153,6 +153,7 @@ def publishCells(grid):
     global navigable_gridpos
 
     navigable_gridpos = []
+    unnavigable_gridpos = []
 
     # resolution and offset of the map
     k = 0
@@ -169,9 +170,40 @@ def publishCells(grid):
                 row = row + "    "
                 navigable_gridpos.append((j, i))
             if (grid[k] == 100):
-                row = row + " " + str (grid[k]);
-                point = getPoint((j, i))
-                cells.cells.append(point)
+                unnavigable_gridpos.append((j, i))
+                if(i > 1):
+                    point = getPoint((j, i-1))
+                    cells.cells.append(point)
+                    unnavigable_gridpos.append(point)
+                    
+                if(j > 1):
+                    point = getPoint((j-1, i))
+                    cells.cells.append(point)
+                    unnavigable_gridpos.append(point)
+                    
+                if(width > j):
+                    point = getPoint((j+1, i))
+                    cells.cells.append(point)
+                    unnavigable_gridpos.append(point)
+                if(height > i):
+                    point = getPoint((j, i+1))
+                    cells.cells.append(point)
+                    unnavigable_gridpos.append(point)
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+#                row = row + " " + str (grid[k]);
+#                point = getPoint((j, i))
+#                cells.cells.append(point)
             k = k + 1
         print "\n"+ row;
         row = ""
