@@ -14,6 +14,7 @@ import tf
 import numpy
 import math
 from astar import AStarNode
+from move import Movement
 import copy
 
 
@@ -234,6 +235,13 @@ def publishWaypoints(list_of_gridpos):
     pubrealpath.publish(wp)
     return wp
 
+def navToWaypoints(list_of_gridpos):
+    waypoints = getWaypoints(list_of_gridpos)
+    
+    count = 0
+    while(len(waypoints) < count):
+        navToPose(waypoints[count].pose)
+        count = count + 1
 
 def run():
     global pub
@@ -251,11 +259,9 @@ def run():
     pubway = rospy.Publisher("/waypoints", GridCells, queue_size=1)
     pubrealpath = rospy.Publisher("/realpath", Path, queue_size=1)
     # change topic for best results
-    goal_sub = rospy.Subscriber(
-        'move_base_simple/goalrbe', PoseStamped, readGoal, queue_size=1)
+    goal_sub = rospy.Subscriber('move_base_simple/goalrbe', PoseStamped, readGoal, queue_size=1)
     # change topic for best results
-    goal_sub = rospy.Subscriber(
-        '/initialpose', PoseWithCovarianceStamped, readStart, queue_size=1)
+    goal_sub = rospy.Subscriber('/initialpose', PoseWithCovarianceStamped, readStart, queue_size=1)
 
     # wait a second for publisher, subscribers, and TF
     rospy.sleep(1)
