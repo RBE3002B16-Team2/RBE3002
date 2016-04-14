@@ -15,6 +15,7 @@ from tf.transformations import euler_from_quaternion
 
 from CostmapThing import CostmapThing
 from astar import NoPathFoundException
+from FuckTheTime import fuck_the_time
 
 wheel_rad = 3.5 / 100.0  # cm
 wheel_base = 23.0 / 100.0  # cm
@@ -29,12 +30,16 @@ def publishTwist(lin_Vel, ang_Vel):
     pub.publish(msg)
 
 
-def navToPose(goal):
+def navToPose(whatever_frame_goal):
     """Drive to a goal subscribed to from /move_base_simple/goal"""
     # compute angle required to make straight-line move to desired pose
     global xPosition
     global yPosition
     global theta
+    global odom_list
+
+    odom_list.waitForTransform('odom', 'map', rospy.Time(0), rospy.Duration(10.0))
+    goal = odom_list.transformPose('map', fuck_the_time(whatever_frame_goal))
 
     initialX = xPosition
     initialY = yPosition
@@ -154,19 +159,21 @@ def pathToPoints(list_of_pos):
         navToPose(pose)
 
 
-def rawwwrrr(goal):
+def plan_a_path_and_nav_to_goal(goal):
     global pose
     global globalCostmapThing
     global localCostmapThing
     global odom_list
+    global pubintermediategoalpose
+
+
 
     ps = PoseStamped()
     ps.pose = pose
     ps.header.frame_id='map'
     ps.header.stamp = rospy.Time(0)
-    # goal.header.stamp = rospy.Time(0)
 
-    pubrealpath = rospy.Publisher("/realpath", Path, queue_size=1)
+
 
     done = False
 
@@ -177,8 +184,10 @@ def rawwwrrr(goal):
         while not done:
             # if close enough kill
             try:
-                nextwp = localCostmapThing.getNextWaypoint(ps, nextwp, odom_list, pathpub=pubrealpath)
-                navToPose(nextwp)
+                nextwp = localCostmapThing.getNextWaypoint(ps, nextwp, odom_list, pathpub=pubrealpath, dist_limit=0.5, wppub=pubintermediategoalpose)
+                odom_list.waitForTransform('odom', 'map', rospy.Time(0), rospy.Duration(10.0))
+                nextwp_t = odom_list.transformPose('map', fuck_the_time(nextwp))
+                navToPose(nextwp_t)
             except NoPathFoundException:
                 nextwp = globalCostmapThing.getNextWaypoint(ps, goal, odom_list, pathpub=pubrealpath)
 
@@ -195,6 +204,9 @@ if __name__ == '__main__':
     global pose
     global globalCostmapThing
     global localCostmapThing
+    global pubrealpath
+    global pubintermediategoalpose
+
     # global odom_tf
     odom_list = tf.TransformListener()  # listner for robot location
 
@@ -202,7 +214,7 @@ if __name__ == '__main__':
 
     pub = rospy.Publisher('/cmd_vel_mux/input/teleop', Twist,None, queue_size=10) # Publisher for commanding robot motion
 
-    goal_sub = rospy.Subscriber('/move_base_simple/goalrbe', PoseStamped, rawwwrrr, queue_size=1)
+    goal_sub = rospy.Subscriber('/move_base_simple/goalrbe', PoseStamped, plan_a_path_and_nav_to_goal, queue_size=1)
 
     globalCostmapThing = CostmapThing()
     localCostmapThing = CostmapThing()
@@ -217,6 +229,10 @@ if __name__ == '__main__':
     sub_global = rospy.Subscriber("/move_base/global_costmap/costmap", OccupancyGrid, globalCostmapThing.map_cb)
     sub_global_update = rospy.Subscriber("/move_base/global_costmap/costmap_updates", OccupancyGridUpdate,
                                          globalCostmapThing.map_update_cb, callback_args=pub_global)
+
+    pubrealpath = rospy.Publisher("/realpath", Path, queue_size=1)
+
+    pubintermediategoalpose = rospy.Publisher("/pubintermediategoalpose", PoseStamped, queue_size=1)
 
     rospy.Timer(rospy.Duration(.01), tCallback)  # timer callback for robot location
 
