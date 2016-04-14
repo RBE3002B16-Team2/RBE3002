@@ -180,15 +180,20 @@ def plan_a_path_and_nav_to_goal(goal):
     nextwp = None
 
     try:
+        print 'initial planning for global map'
         nextwp = globalCostmapThing.getNextWaypoint(ps, goal, odom_list, pathpub=pubrealpath)
+        print nextwp
         while not done:
             # if close enough kill
             try:
+                print 'tryin to replan in the local map'
                 nextwp = localCostmapThing.getNextWaypoint(ps, nextwp, odom_list, pathpub=pubrealpath, dist_limit=0.5, wppub=pubintermediategoalpose)
                 odom_list.waitForTransform('odom', 'map', rospy.Time(0), rospy.Duration(10.0))
                 nextwp_t = odom_list.transformPose('map', fuck_the_time(nextwp))
-                navToPose(nextwp_t)
+                print 'naving to the first waypoint'
+                #navToPose(nextwp_t)
             except NoPathFoundException:
+                print 'no path found in local. replan in global'
                 nextwp = globalCostmapThing.getNextWaypoint(ps, goal, odom_list, pathpub=pubrealpath)
 
     except NoPathFoundException:
@@ -216,8 +221,12 @@ if __name__ == '__main__':
 
     goal_sub = rospy.Subscriber('/move_base_simple/goalrbe', PoseStamped, plan_a_path_and_nav_to_goal, queue_size=1)
 
-    globalCostmapThing = CostmapThing()
-    localCostmapThing = CostmapThing()
+    pubpath = rospy.Publisher("/path", GridCells, queue_size=1)
+    pubopen = rospy.Publisher("/opennodes", GridCells, queue_size=1)
+    pubclose = rospy.Publisher("/closednodes", GridCells, queue_size=1)
+
+    globalCostmapThing = CostmapThing(astarpubs=(pubopen,pubclose,pubpath))
+    localCostmapThing = CostmapThing(astarpubs=(pubopen,pubclose,pubpath))
 
     pub_local = rospy.Publisher("/navigable_points_local", GridCells, queue_size=1)
     pub_global = rospy.Publisher("/navigable_points_global", GridCells, queue_size=1)
