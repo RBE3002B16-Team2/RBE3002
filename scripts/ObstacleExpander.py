@@ -5,60 +5,28 @@ from nav_msgs.msg import GridCells
 from std_msgs.msg import String
 from geometry_msgs.msg import Twist, Point, Pose, PoseStamped, PoseWithCovarianceStamped
 from nav_msgs.msg import Odometry, OccupancyGrid, Path
+from map_msgs.msg import OccupancyGridUpdate
 import tf
 import numpy
 import math
-
-
-# reads in global map
-def mapCallBack(og, publisher):
-    resolution = og.info.resolution
-    width = og.info.width
-    height = og.info.height
-    offsetX = og.info.origin.position.x
-    offsetY = og.info.origin.position.y
-
-    # resolution and offset of the map
-    k = 0
-    cells = GridCells()
-    cells.header = og.header
-    cells.cell_width = resolution
-    cells.cell_height = resolution
-
-    for i in range(0, height):  # height should be set to hieght of grid
-        for j in range(0, width):  # width should be set to width of grid
-            # print k # used for debugging
-            if og.data[k] < 30:
-                cells.cells.append(getPoint((j, i), resolution, offsetX, offsetY))
-            k += 1
-    publisher.publish(cells)
-
-
-# convert from grid position (x,y) to real world coordinate. return a Point.
-def getPoint(gridpos, resolution, offsetX, offsetY):
-    point = Point()
-    # added secondary offset
-    point.x = (gridpos[0] * resolution) + offsetX + (.5 * resolution)
-    # added secondary offset ... Magic ?
-    point.y = (gridpos[1] * resolution) + offsetY + (.5 * resolution)
-    point.z = 0
-
-    return point
+from CostmapThing import CostmapThing
 
 
 def run():
-    global pubGlobal
-    global pubLocal
+    globalCostmapThing = CostmapThing()
+    localCostmapThing = CostmapThing()
 
-    pubLocal = rospy.Publisher("/navigable_points_local", GridCells, queue_size=1)
-    pubGlobal = rospy.Publisher("/navigable_points_global", GridCells, queue_size=1, latch=True)
+    pub_local = rospy.Publisher("/navigable_points_local", GridCells, queue_size=1)
+    pub_global = rospy.Publisher("/navigable_points_global", GridCells, queue_size=1)
 
     rospy.init_node('ObstacleExpander')
-    subLocal = rospy.Subscriber("/move_base/local_costmap/costmap", OccupancyGrid, mapCallBack, callback_args=pubLocal)
+    sub_local = rospy.Subscriber("/move_base/local_costmap/costmap", OccupancyGrid, localCostmapThing.map_cb)
+    sub_local_update = rospy.Subscriber("/move_base/local_costmap/costmap_updates", OccupancyGridUpdate,
+                                        localCostmapThing.map_update_cb, callback_args=pub_local)
 
-    # I give up. Global cost map update thing is PITA.
-    subGlobal = rospy.Subscriber("/move_base/global_costmap/costmap", OccupancyGrid, mapCallBack,
-                                 callback_args=pubGlobal)
+    sub_global = rospy.Subscriber("/move_base/global_costmap/costmap", OccupancyGrid, globalCostmapThing.map_cb)
+    sub_global_update = rospy.Subscriber("/move_base/global_costmap/costmap_updates", OccupancyGridUpdate,
+                                         globalCostmapThing.map_update_cb, callback_args=pub_global)
 
     rospy.sleep(1)
 
