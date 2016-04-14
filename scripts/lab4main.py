@@ -196,6 +196,8 @@ if __name__ == '__main__':
     global globalCostmapThing
     global localCostmapThing
     # global odom_tf
+    odom_list = tf.TransformListener()  # listner for robot location
+
     pose = Pose()
 
     goal_sub = rospy.Subscriber('/move_base_simple/goalrbe', PoseStamped, rawwwrrr, queue_size=1)
@@ -216,7 +218,7 @@ if __name__ == '__main__':
 
     rospy.Timer(rospy.Duration(.01), tCallback)  # timer callback for robot location
 
-    odom_list = tf.TransformListener()  # listner for robot location
+
 
     print "Starting Lab 4"
     while not rospy.is_shutdown():

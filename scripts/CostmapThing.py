@@ -80,7 +80,7 @@ class CostmapThing:
         offsetX = self.og.info.origin.position.x
         offsetY = self.og.info.origin.position.y
 
-        tf_listener.waitForTransform('map', 'odom', rospy.Time(0), rospy.Duration(1.0))
+        tf_listener.waitForTransform('odom','map', rospy.Time(0), rospy.Duration(10.0))
         tstart = tf_listener.transformPose(self.og.header.frame_id, start)
         tgoal = tf_listener.transformPose(self.og.header.frame_id, goal)
 

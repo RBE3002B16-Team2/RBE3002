@@ -40,7 +40,7 @@ class NoPathFoundException(Exception):
 
 # publishes map to rviz using gridcells type
 def getNeighbors(me_gridpos, navigable_gridpos):
-    assert me_gridpos in navigable_gridpos
+    # assert me_gridpos in navigable_gridpos
     offset = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
     neighbor_pos = []
     for o in offset:
