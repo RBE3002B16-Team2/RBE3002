@@ -73,18 +73,16 @@ class CostmapThing:
         return cells
 
     # returns PoseStamped
-    def getNextWaypoint(self, start, goal, dist_limit=None, pathpub=None, wppub=None):
+    def getNextWaypoint(self, start, goal, tf_listener, dist_limit=None, pathpub=None, wppub=None):
         resolution = self.og.info.resolution
         width = self.og.info.width
         height = self.og.info.height
         offsetX = self.og.info.origin.position.x
         offsetY = self.og.info.origin.position.y
 
-        # it is broken here
-        # t = tf.TransformerROS(True, rospy.Duration(1.0))
-        t = tf.TransformListener()
-        tstart = t.transformPose(self.og.header.frame_id, start)
-        tgoal = t.transformPose(self.og.header.frame_id, goal)
+        tf_listener.waitForTransform('map', 'odom', rospy.Time(0), rospy.Duration(1.0))
+        tstart = tf_listener.transformPose(self.og.header.frame_id, start)
+        tgoal = tf_listener.transformPose(self.og.header.frame_id, goal)
 
         if dist_limit is not None:
             tgoal = limit_max_dist(tstart, tgoal, dist_limit)

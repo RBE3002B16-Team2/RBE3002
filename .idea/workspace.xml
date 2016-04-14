@@ -2,14 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4a8941d3-8ce3-425c-9aaf-072f53c56ecf" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/lab4main.py" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/scripts/l2.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/scripts/lab3_grid_cellsD16.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/scripts/move.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/scripts/pathToMove.py" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/CostmapThing.py" afterPath="$PROJECT_DIR$/scripts/CostmapThing.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/astar.py" afterPath="$PROJECT_DIR$/scripts/astar.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/lab4main.py" afterPath="$PROJECT_DIR$/scripts/lab4main.py" />
     </list>
     <ignored path="lab3.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -35,8 +29,8 @@
           <file leaf-file-name="CostmapThing.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/scripts/CostmapThing.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="234">
-                  <caret line="82" column="27" selection-start-line="82" selection-start-column="27" selection-end-line="82" selection-end-column="27" />
+                <state relative-caret-position="261">
+                  <caret line="90" column="32" selection-start-line="90" selection-start-column="32" selection-end-line="90" selection-end-column="32" />
                   <folding>
                     <element signature="e#0#11#0" expanded="true" />
                   </folding>
@@ -47,8 +41,8 @@
           <file leaf-file-name="lab4main.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/scripts/lab4main.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="385">
-                  <caret line="215" column="36" selection-start-line="215" selection-start-column="19" selection-end-line="215" selection-end-column="36" />
+                <state relative-caret-position="150">
+                  <caret line="134" column="88" selection-start-line="134" selection-start-column="88" selection-end-line="134" selection-end-column="88" />
                   <folding>
                     <element signature="e#103#132#0" expanded="true" />
                   </folding>
@@ -59,7 +53,7 @@
           <file leaf-file-name="topics.py" pinned="false" current-in-tab="false">
             <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/rospy/topics.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="78">
+                <state relative-caret-position="348">
                   <caret line="734" column="0" selection-start-line="734" selection-start-column="0" selection-end-line="734" selection-end-column="0" />
                   <folding />
                 </state>
@@ -79,7 +73,7 @@
           <file leaf-file-name="listener.py" pinned="false" current-in-tab="false">
             <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/tf/listener.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="150">
+                <state relative-caret-position="164">
                   <caret line="187" column="0" selection-start-line="187" selection-start-column="0" selection-end-line="187" selection-end-column="0" />
                   <folding />
                 </state>
@@ -106,9 +100,10 @@
             <entry file="file://$PROJECT_DIR$/scripts/CostmapThing.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="18">
-                  <caret line="95" column="37" selection-start-line="95" selection-start-column="37" selection-end-line="95" selection-end-column="37" />
+                  <caret line="93" column="37" selection-start-line="93" selection-start-column="37" selection-end-line="93" selection-end-column="37" />
                   <folding>
                     <element signature="e#0#11#0" expanded="true" />
+                    <marker date="1460615281943" expanded="true" signature="2543:3751" placeholder="..." />
                   </folding>
                 </state>
               </provider>
@@ -148,6 +143,7 @@
         <option value="$PROJECT_DIR$/scripts/move.py" />
         <option value="$PROJECT_DIR$/scripts/lab3_grid_cellsD16.py" />
         <option value="$PROJECT_DIR$/scripts/CostmapThing.py" />
+        <option value="$PROJECT_DIR$/scripts/lab4main.py" />
       </list>
     </option>
   </component>
@@ -431,7 +427,7 @@
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33872977" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3524284" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -457,7 +453,10 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="4" />
+      <breakpoints-dialog>
+        <breakpoints-dialog />
+      </breakpoints-dialog>
+      <option name="time" value="6" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -534,14 +533,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/rospy/topics.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="78">
-          <caret line="734" column="0" selection-start-line="734" selection-start-column="0" selection-end-line="734" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/rospy/impl/tcpros_base.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -574,14 +565,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/tf/listener.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="187" column="0" selection-start-line="187" selection-start-column="0" selection-end-line="187" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/ObstacleExpander.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
@@ -600,10 +583,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/tf/listener.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="164">
+          <caret line="187" column="0" selection-start-line="187" selection-start-column="0" selection-end-line="187" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/rospy/topics.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="348">
+          <caret line="734" column="0" selection-start-line="734" selection-start-column="0" selection-end-line="734" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/lab4main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="385">
-          <caret line="215" column="36" selection-start-line="215" selection-start-column="19" selection-end-line="215" selection-end-column="36" />
+        <state relative-caret-position="150">
+          <caret line="134" column="88" selection-start-line="134" selection-start-column="88" selection-end-line="134" selection-end-column="88" />
           <folding>
             <element signature="e#103#132#0" expanded="true" />
           </folding>
@@ -612,8 +611,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/CostmapThing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="82" column="27" selection-start-line="82" selection-start-column="27" selection-end-line="82" selection-end-column="27" />
+        <state relative-caret-position="261">
+          <caret line="90" column="32" selection-start-line="90" selection-start-column="32" selection-end-line="90" selection-end-column="32" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>

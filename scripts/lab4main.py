@@ -132,7 +132,7 @@ def tCallback(event):
     global yPosition
     global theta
 
-    odom_list.waitForTransform('map', 'base_footprint', rospy.Time(0), rospy.Duration(1.0))
+    odom_list.waitForTransform('map', 'base_footprint', rospy.Time(0), rospy.Duration(10.0))
     (position, orientation) = odom_list.lookupTransform('map', 'base_footprint', rospy.Time(0))
     pose.position.x = position[0]
     pose.position.y = position[1]
@@ -158,10 +158,13 @@ def rawwwrrr(goal):
     global pose
     global globalCostmapThing
     global localCostmapThing
+    global odom_list
 
     ps = PoseStamped()
     ps.pose = pose
-    ps.header.frame_id='/map'
+    ps.header.frame_id='map'
+    ps.header.stamp = rospy.Time(0)
+    # goal.header.stamp = rospy.Time(0)
 
     pubrealpath = rospy.Publisher("/realpath", Path, queue_size=1)
 
@@ -170,14 +173,14 @@ def rawwwrrr(goal):
     nextwp = None
 
     try:
-        nextwp = globalCostmapThing.getNextWaypoint(ps, goal, pathpub=pubrealpath)
+        nextwp = globalCostmapThing.getNextWaypoint(ps, goal, odom_list, pathpub=pubrealpath)
         while not done:
             # if close enough kill
             try:
-                nextwp = localCostmapThing.getNextWaypoint(ps, nextwp, pathpub=pubrealpath)
+                nextwp = localCostmapThing.getNextWaypoint(ps, nextwp, odom_list, pathpub=pubrealpath)
                 navToPose(nextwp)
             except NoPathFoundException:
-                nextwp = globalCostmapThing.getNextWaypoint(ps, goal, pathpub=pubrealpath)
+                nextwp = globalCostmapThing.getNextWaypoint(ps, goal, odom_list, pathpub=pubrealpath)
 
     except NoPathFoundException:
         print 'it is not possible'
