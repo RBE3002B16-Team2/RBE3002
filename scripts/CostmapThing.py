@@ -95,7 +95,7 @@ class CostmapThing:
         goal_grid_pos = pose2gridpos(tgoal.pose, resolution, offsetX, offsetY)
         try:
             path = aStar(self.make_navigable_gridpos(), start_grid_pos, goal_grid_pos)
-            wp = self.getWaypoints(path, goal, pathpub)
+            wp = self.getWaypoints(path, goal, publisher=pathpub)
             retp = PoseStamped()
             if len(wp) > 1:
                 retp.pose = wp[1].pose
@@ -115,7 +115,7 @@ class CostmapThing:
         offsetY = self.og.info.origin.position.y
 
         wp = Path()
-        wp.header.frame_id = 'map'
+        wp.header.frame_id = self.og.header.frame_id
         poses = []
         lastdirection = -999
         for i in range(0, len(list_of_gridpos) - 1):
@@ -123,7 +123,7 @@ class CostmapThing:
             if direction != lastdirection:
                 lastdirection = copy.deepcopy(direction)
                 newPose = PoseStamped()
-                newPose.header.frame_id = 'map'
+                newPose.header.frame_id = self.og.header.frame_id
                 newPose.pose = Pose()
                 newPose.pose.position = getPoint(list_of_gridpos[i], resolution, offsetX, offsetY)
                 quaternion = tf.transformations.quaternion_from_euler(0, 0, direction)
@@ -132,9 +132,7 @@ class CostmapThing:
                 newPose.pose.orientation.z = quaternion[2]
                 newPose.pose.orientation.w = quaternion[3]
                 poses.append(newPose)
-        newPose = PoseStamped()
-        newPose.header.frame_id = 'map'
-        newPose.pose = goal_pose
+        newPose = goal_pose
         poses.append(newPose)
         wp.poses = poses
         if publisher is not None:

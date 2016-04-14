@@ -2,7 +2,7 @@ from geometry_msgs.msg import Point
 import math
 
 
-def aStar(navigable_gridpos, startgridpos, goalgridpos):
+def aStar(navigable_gridpos, startgridpos, goalgridpos, cellpub=None):
 
     openNodes = {}
     closedNodes = {}
@@ -32,6 +32,7 @@ def aStar(navigable_gridpos, startgridpos, goalgridpos):
                 continue
             if n not in openNodes or openNodes[n].g_cost > newNode.g_cost:
                 openNodes[n] = newNode
+
     raise NoPathFoundException()
 
 
