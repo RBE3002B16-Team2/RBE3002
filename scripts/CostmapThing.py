@@ -10,8 +10,9 @@ from FuckTheTime import fuck_the_time
 
 
 class CostmapThing:
-    def __init__(self):
+    def __init__(self,astarpubs=None):
         self.onedmap = None
+        self.astarpubs = astarpubs
 
     def map_cb(self, og):
         self.og = og
@@ -86,7 +87,7 @@ class CostmapThing:
         tgoal = tf_listener.transformPose(self.og.header.frame_id, fuck_the_time(goal))
 
         if dist_limit is not None:
-            tgoal = limit_max_dist(tstart, tgoal, dist_limit)
+            tgoal = self.limit_max_dist(tstart, tgoal, dist_limit)
 
         if wppub is not None:
             wppub.publish(tgoal)
@@ -94,11 +95,12 @@ class CostmapThing:
         start_grid_pos = pose2gridpos(tstart.pose, resolution, offsetX, offsetY)
         goal_grid_pos = pose2gridpos(tgoal.pose, resolution, offsetX, offsetY)
         try:
-            path = aStar(self.make_navigable_gridpos(), start_grid_pos, goal_grid_pos)
+            path = aStar(self.make_navigable_gridpos(), start_grid_pos, goal_grid_pos, self.astarnodescb)
             wp = self.getWaypoints(path, goal, publisher=pathpub)
             retp = PoseStamped()
-            if len(wp) > 1:
-                retp.pose = wp[1].pose
+            # magic number. skip a few waypoints in the beginning
+            if len(wp) > 2:
+                retp.pose = wp[2].pose
                 retp.header = self.og.header
             else:
                 retp = goal
@@ -139,6 +141,45 @@ class CostmapThing:
             publisher.publish(wp)
         return wp.poses
 
+    def astarnodescb(self, open, close, path):
+        if self.astarpubs is None:
+            return
+        openpub, closedpub, pathpub = self.astarpubs
+        self.publishPoints(openpub,open)
+        self.publishPoints(closedpub,close)
+        self.publishPoints(pathpub, path)
+
+    def publishPoints(self, pub, listofgridpos):
+        resolution = self.og.info.resolution
+        width = self.og.info.width
+        height = self.og.info.height
+        offsetX = self.og.info.origin.position.x
+        offsetY = self.og.info.origin.position.y
+
+        cells = GridCells()
+        cells.header.frame_id = self.og.header.frame_id
+        cells.cell_width = resolution
+        cells.cell_height = resolution
+
+        for g in listofgridpos:
+            point = getPoint(g, resolution, offsetX, offsetY)
+            cells.cells.append(point)
+
+        pub.publish(cells)
+
+    def limit_max_dist(self, fr_posestamped, to_posestamped, max_dist):
+        angle = get_direction(fr_posestamped, to_posestamped)
+
+        if get_distance(fr_posestamped, to_posestamped) > max_dist:
+            ps = PoseStamped()
+            ps.pose.position.x = fr_posestamped.pose.position.x + math.cos(angle) * max_dist
+            ps.pose.position.y = fr_posestamped.pose.position.y + math.sin(angle) * max_dist
+            ps.header.frame_id = self.og.header.frame_id
+            ps.pose.orientation = fr_posestamped.pose.orientation
+            ps = fuck_the_time(ps)
+            return ps
+        else:
+            return to_posestamped
 
 def getDirection(fr, to):
     dx = to[0] - fr[0]
@@ -157,13 +198,6 @@ def get_direction(fr_posestamped, to_posestamped):
     dy = fr_posestamped.pose.position.y - to_posestamped.pose.position.y
     return math.atan2(dy, dx)
 
-
-def limit_max_dist(fr_posestamped, to_posestamped, max_dist):
-    angle = get_direction(fr_posestamped, to_posestamped)
-    if get_distance(fr_posestamped, to_posestamped) > max_dist:
-        to_posestamped.pose.position.x = fr_posestamped.pose.position.x + math.cos(angle) * max_dist
-        to_posestamped.pose.position.y = fr_posestamped.pose.position.y + math.sin(angle) * max_dist
-    return to_posestamped
 
 
 def getPoint(gridpos, resolution, offsetX, offsetY):
