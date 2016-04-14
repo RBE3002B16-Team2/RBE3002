@@ -200,6 +200,8 @@ if __name__ == '__main__':
 
     pose = Pose()
 
+    pub = rospy.Publisher('/cmd_vel_mux/input/teleop', Twist,None, queue_size=10) # Publisher for commanding robot motion
+
     goal_sub = rospy.Subscriber('/move_base_simple/goalrbe', PoseStamped, rawwwrrr, queue_size=1)
 
     globalCostmapThing = CostmapThing()

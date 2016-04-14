@@ -6,6 +6,7 @@ from nav_msgs.msg import Odometry, OccupancyGrid, Path
 import tf
 import math
 from astar import aStar, NoPathFoundException
+from FuckTheTime import fuck_the_time
 
 
 class CostmapThing:
@@ -81,8 +82,8 @@ class CostmapThing:
         offsetY = self.og.info.origin.position.y
 
         tf_listener.waitForTransform('odom','map', rospy.Time(0), rospy.Duration(10.0))
-        tstart = tf_listener.transformPose(self.og.header.frame_id, start)
-        tgoal = tf_listener.transformPose(self.og.header.frame_id, goal)
+        tstart = tf_listener.transformPose(self.og.header.frame_id, fuck_the_time(start))
+        tgoal = tf_listener.transformPose(self.og.header.frame_id, fuck_the_time(goal))
 
         if dist_limit is not None:
             tgoal = limit_max_dist(tstart, tgoal, dist_limit)
