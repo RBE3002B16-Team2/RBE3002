@@ -24,7 +24,6 @@ def aStar(navigable_gridpos, startgridpos, goalgridpos, nodes_callback=None):
         if current[0] == goalgridpos:
             path = getPath(current[1])
             nodes_callback(openNodes.keys(), closedNodes.keys(), path)
-            print len(path)
             return path
 
         openNodes.pop(current[0])

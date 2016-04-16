@@ -105,9 +105,11 @@ class CostmapThing:
             if len(wp) > 2:
                 retp.pose = wp[2].pose
                 retp.header = self.og.header
+                return (retp, False)
             else:
-                retp = goal
-            return retp
+                retp = tgoal
+                return (retp, True)
+
         except NoPathFoundException as e:
             raise e
 

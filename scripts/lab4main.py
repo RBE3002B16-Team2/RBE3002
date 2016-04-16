@@ -165,39 +165,45 @@ def plan_a_path_and_nav_to_goal(goal):
     global localCostmapThing
     global odom_list
     global pubintermediategoalpose
+    global where_the_f_am_i_going
 
     ps = PoseStamped()
     ps.pose = pose
     ps.header.frame_id = 'map'
     ps.header.stamp = rospy.Time(0)
 
-    done = False
+    localdone = False
+    globaldone = False
 
     nextwp = None
 
-    try:
-        print 'initial planning for global map'
-        # nextwp = globalCostmapThing.getNextWaypoint(ps, goal, odom_list)
-        print nextwp
-        while not done:
-            # if close enough kill
-            try:
-                print 'tryin to replan in the local map'
-                # nextwp = localCostmapThing.getNextWaypoint(ps, nextwp, odom_list, pathpub=pubrealpath, dist_limit=0.5, wppub=pubintermediategoalpose)
-                nextwp = localCostmapThing.getNextWaypoint(ps, goal, odom_list, pathpub=pubrealpath,
-                                                           wppub=pubintermediategoalpose, dist_limit=0.5)
+    while not globaldone:
+        try:
+            print 'initial planning for global map'
+            nextwp, globaldone = globalCostmapThing.getNextWaypoint(ps, goal, odom_list)
+            print nextwp
+            while not localdone:
+                try:
+                    print 'tryin to replan in the local map'
+                    nextwp_l, localdone = localCostmapThing.getNextWaypoint(ps, nextwp, odom_list, pathpub=pubrealpath,
+                                                                            dist_limit=0.5,
+                                                                            wppub=pubintermediategoalpose)
+                    # nextwp = localCostmapThing.getNextWaypoint(ps, goal, odom_list, pathpub=pubrealpath,
+                    #                                            wppub=pubintermediategoalpose, dist_limit=0.5)
 
-                odom_list.waitForTransform('odom', 'map', rospy.Time(0), rospy.Duration(10.0))
-                nextwp_t = odom_list.transformPose('map', fuck_the_time(nextwp))
-                print 'naving to the first waypoint'
-                return
-                # navToPose(nextwp_t)
-            except NoPathFoundException:
-                print 'no path found in local. replan in global'
-                nextwp = globalCostmapThing.getNextWaypoint(ps, goal, odom_list, pathpub=pubrealpath)
-
-    except NoPathFoundException:
-        print 'it is not possible'
+                    odom_list.waitForTransform('odom', 'map', rospy.Time(0), rospy.Duration(10.0))
+                    nextwp_lt = odom_list.transformPose('map', fuck_the_time(nextwp_l))
+                    where_the_f_am_i_going.publish(nextwp_lt)
+                    print 'naving to the first waypoint'
+                    navToPose(nextwp_lt)
+                except NoPathFoundException:
+                    print 'no path found in local. replan in global'
+                    nextwp, globaldone = globalCostmapThing.getNextWaypoint(ps, goal, odom_list, pathpub=pubrealpath)
+            print 'Reached local goal'
+        except NoPathFoundException:
+            print 'cannot find a path in global map'
+            globaldone = True
+        print 'Reached global goal'
 
 
 # This is the program's main function
@@ -211,6 +217,7 @@ if __name__ == '__main__':
     global localCostmapThing
     global pubrealpath
     global pubintermediategoalpose
+    global where_the_f_am_i_going
 
     # global odom_tf
     odom_list = tf.TransformListener()  # listner for robot location
@@ -226,8 +233,8 @@ if __name__ == '__main__':
     pubopen = rospy.Publisher("/opennodes", GridCells, queue_size=1)
     pubclose = rospy.Publisher("/closednodes", GridCells, queue_size=1)
 
-    # globalCostmapThing = CostmapThing(astarpubs=(pubopen,pubclose,pubpath))
-    globalCostmapThing = CostmapThing(odom_list)
+    globalCostmapThing = CostmapThing(odom_list, astarpubs=(pubopen, pubclose, pubpath))
+    # globalCostmapThing = CostmapThing(odom_list)
 
     localCostmapThing = CostmapThing(odom_list, astarpubs=(pubopen, pubclose, pubpath))
 
@@ -245,7 +252,7 @@ if __name__ == '__main__':
     pubrealpath = rospy.Publisher("/realpath", Path, queue_size=1)
 
     pubintermediategoalpose = rospy.Publisher("/pubintermediategoalpose", PoseStamped, queue_size=1)
-
+    where_the_f_am_i_going = rospy.Publisher("/where_the_f_am_i_going", PoseStamped, queue_size=1)
     rospy.Timer(rospy.Duration(.01), tCallback)  # timer callback for robot location
 
     print "Starting Lab 4"

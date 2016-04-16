@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4a8941d3-8ce3-425c-9aaf-072f53c56ecf" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/CostmapThing.py" afterPath="$PROJECT_DIR$/scripts/CostmapThing.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/astar.py" afterPath="$PROJECT_DIR$/scripts/astar.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/lab4main.py" afterPath="$PROJECT_DIR$/scripts/lab4main.py" />
@@ -31,7 +30,7 @@
           <file leaf-file-name="CostmapThing.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/scripts/CostmapThing.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="169">
+                <state relative-caret-position="142">
                   <caret line="87" column="0" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
                   <folding>
                     <element signature="e#0#11#0" expanded="true" />
@@ -94,7 +93,7 @@
             <entry file="file://$PROJECT_DIR$/scripts/astar.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="221">
-                  <caret line="32" column="55" selection-start-line="32" selection-start-column="55" selection-end-line="32" selection-end-column="55" />
+                  <caret line="17" column="27" selection-start-line="17" selection-start-column="27" selection-end-line="17" selection-end-column="27" />
                   <folding>
                     <element signature="e#0#35#0" expanded="true" />
                   </folding>
@@ -105,8 +104,8 @@
           <file leaf-file-name="lab4main.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/scripts/lab4main.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="86">
-                  <caret line="209" column="29" selection-start-line="209" selection-start-column="29" selection-end-line="209" selection-end-column="29" />
+                <state relative-caret-position="272">
+                  <caret line="196" column="50" selection-start-line="196" selection-start-column="50" selection-end-line="196" selection-end-column="50" />
                   <folding>
                     <element signature="e#103#132#0" expanded="true" />
                   </folding>
@@ -118,7 +117,7 @@
             <entry file="file://$PROJECT_DIR$/scripts/FuckTheTime.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="52">
-                  <caret line="4" column="37" selection-start-line="4" selection-start-column="37" selection-end-line="4" selection-end-column="37" />
+                  <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
@@ -127,7 +126,7 @@
           <file leaf-file-name="topics.py" pinned="false" current-in-tab="false">
             <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/rospy/topics.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="9334">
+                <state relative-caret-position="13">
                   <caret line="719" column="0" selection-start-line="719" selection-start-column="0" selection-end-line="719" selection-end-column="0" />
                   <folding />
                 </state>
@@ -141,8 +140,8 @@
           <file leaf-file-name="CostmapThing.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/scripts/CostmapThing.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="182">
-                  <caret line="121" column="19" selection-start-line="121" selection-start-column="19" selection-end-line="121" selection-end-column="19" />
+                <state relative-caret-position="104">
+                  <caret line="91" column="0" selection-start-line="91" selection-start-column="0" selection-end-line="91" selection-end-column="0" />
                   <folding>
                     <element signature="e#0#11#0" expanded="true" />
                   </folding>
@@ -468,7 +467,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.44333747" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.43088418" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -775,14 +774,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/rospy/topics.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9334">
-          <caret line="719" column="0" selection-start-line="719" selection-start-column="0" selection-end-line="719" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/tf/transformations.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15314">
@@ -802,24 +793,22 @@
     <entry file="file://$PROJECT_DIR$/scripts/FuckTheTime.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="52">
-          <caret line="4" column="37" selection-start-line="4" selection-start-column="37" selection-end-line="4" selection-end-column="37" />
+          <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/lab4main.py">
+    <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/rospy/topics.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="86">
-          <caret line="209" column="29" selection-start-line="209" selection-start-column="29" selection-end-line="209" selection-end-column="29" />
-          <folding>
-            <element signature="e#103#132#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="13">
+          <caret line="719" column="0" selection-start-line="719" selection-start-column="0" selection-end-line="719" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/CostmapThing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="169">
+        <state relative-caret-position="142">
           <caret line="87" column="0" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
@@ -827,10 +816,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/lab4main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="196" column="50" selection-start-line="196" selection-start-column="50" selection-end-line="196" selection-end-column="50" />
+          <folding>
+            <element signature="e#103#132#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/astar.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
-          <caret line="32" column="55" selection-start-line="32" selection-start-column="55" selection-end-line="32" selection-end-column="55" />
+          <caret line="17" column="27" selection-start-line="17" selection-start-column="27" selection-end-line="17" selection-end-column="27" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>
