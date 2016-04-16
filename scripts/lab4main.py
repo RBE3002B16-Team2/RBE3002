@@ -166,14 +166,10 @@ def plan_a_path_and_nav_to_goal(goal):
     global odom_list
     global pubintermediategoalpose
 
-
-
     ps = PoseStamped()
     ps.pose = pose
-    ps.header.frame_id='map'
+    ps.header.frame_id = 'map'
     ps.header.stamp = rospy.Time(0)
-
-
 
     done = False
 
@@ -181,17 +177,21 @@ def plan_a_path_and_nav_to_goal(goal):
 
     try:
         print 'initial planning for global map'
-        nextwp = globalCostmapThing.getNextWaypoint(ps, goal, odom_list, pathpub=pubrealpath)
+        # nextwp = globalCostmapThing.getNextWaypoint(ps, goal, odom_list)
         print nextwp
         while not done:
             # if close enough kill
             try:
                 print 'tryin to replan in the local map'
-                nextwp = localCostmapThing.getNextWaypoint(ps, nextwp, odom_list, pathpub=pubrealpath, dist_limit=0.5, wppub=pubintermediategoalpose)
+                # nextwp = localCostmapThing.getNextWaypoint(ps, nextwp, odom_list, pathpub=pubrealpath, dist_limit=0.5, wppub=pubintermediategoalpose)
+                nextwp = localCostmapThing.getNextWaypoint(ps, goal, odom_list, pathpub=pubrealpath,
+                                                           wppub=pubintermediategoalpose, dist_limit=0.5)
+
                 odom_list.waitForTransform('odom', 'map', rospy.Time(0), rospy.Duration(10.0))
                 nextwp_t = odom_list.transformPose('map', fuck_the_time(nextwp))
                 print 'naving to the first waypoint'
-                #navToPose(nextwp_t)
+                return
+                # navToPose(nextwp_t)
             except NoPathFoundException:
                 print 'no path found in local. replan in global'
                 nextwp = globalCostmapThing.getNextWaypoint(ps, goal, odom_list, pathpub=pubrealpath)
@@ -217,7 +217,8 @@ if __name__ == '__main__':
 
     pose = Pose()
 
-    pub = rospy.Publisher('/cmd_vel_mux/input/teleop', Twist,None, queue_size=10) # Publisher for commanding robot motion
+    pub = rospy.Publisher('/cmd_vel_mux/input/teleop', Twist, None,
+                          queue_size=10)  # Publisher for commanding robot motion
 
     goal_sub = rospy.Subscriber('/move_base_simple/goalrbe', PoseStamped, plan_a_path_and_nav_to_goal, queue_size=1)
 
@@ -225,8 +226,10 @@ if __name__ == '__main__':
     pubopen = rospy.Publisher("/opennodes", GridCells, queue_size=1)
     pubclose = rospy.Publisher("/closednodes", GridCells, queue_size=1)
 
-    globalCostmapThing = CostmapThing(astarpubs=(pubopen,pubclose,pubpath))
-    localCostmapThing = CostmapThing(astarpubs=(pubopen,pubclose,pubpath))
+    # globalCostmapThing = CostmapThing(astarpubs=(pubopen,pubclose,pubpath))
+    globalCostmapThing = CostmapThing(odom_list)
+
+    localCostmapThing = CostmapThing(odom_list, astarpubs=(pubopen, pubclose, pubpath))
 
     pub_local = rospy.Publisher("/navigable_points_local", GridCells, queue_size=1)
     pub_global = rospy.Publisher("/navigable_points_global", GridCells, queue_size=1)
@@ -244,8 +247,6 @@ if __name__ == '__main__':
     pubintermediategoalpose = rospy.Publisher("/pubintermediategoalpose", PoseStamped, queue_size=1)
 
     rospy.Timer(rospy.Duration(.01), tCallback)  # timer callback for robot location
-
-
 
     print "Starting Lab 4"
     while not rospy.is_shutdown():
