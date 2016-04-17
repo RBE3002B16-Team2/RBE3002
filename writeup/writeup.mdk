@@ -1,0 +1,22 @@
+Title         : RBE 3002 Lab 4
+Author        : Keshuai Xu, William Sullivan, Richard Eberheim
+
+[TITLE]
+
+# Occupancy grid size
+The occupancy grid size was not modified because our a-star algorithm is efficient enough to handle the original number of cells.
+
+# Updated heuristic
+The new h-cost is scaled-down weighed average of the Manhattan distance and the cost from the costmap.  
+``` Python
+# fr and to are tuples (x,y)
+def gethcost(fr, to, get_cost_map_cost=None):
+    if get_cost_map_cost is not None:
+        # magic coefficients. hopefully the added cost (0 to 10) does not exceed the actual distance
+        return gethcost(fr, to) * 0.5 + get_cost_map_cost(to) * 0.1
+    else:
+        # manhattan distance
+        return abs(to[0] - fr[0]) + abs(to[1] - fr[1])
+```
+
+[reference manual]: http://research.microsoft.com/en-us/um/people/daan/madoko/doc/reference.html  "Madoko refrence manual"
