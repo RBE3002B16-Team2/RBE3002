@@ -230,7 +230,7 @@ def plan_a_path_and_nav_to_goal(goal):
                         navToPose_but_dont_care_end_orientation(nextwp)
 
                     list_of_pose = localCostmapThing.get_a_list_of_pose_to_goal(ps, nextwp, odom_list, pathpub=pubrealpath,
-                                                      dist_limit=1.0,
+                                                      dist_limit=0.8,
                                                       wppub=pubintermediategoalpose)
                     local_feasible = True
                     for i, nextwp_l in enumerate(list_of_pose):
@@ -291,7 +291,7 @@ if __name__ == '__main__':
     pubopen = rospy.Publisher("/opennodes", GridCells, queue_size=1)
     pubclose = rospy.Publisher("/closednodes", GridCells, queue_size=1)
 
-    globalCostmapThing = CostmapThing(odom_list, astarpubs=(pubopen, pubclose, pubpath), threshold=40)
+    globalCostmapThing = CostmapThing(odom_list, astarpubs=(pubopen, pubclose, pubpath), threshold=80)
     # globalCostmapThing = CostmapThing(odom_list)
 
     localCostmapThing = CostmapThing(odom_list, astarpubs=(pubopen, pubclose, pubpath), threshold=50)
