@@ -79,66 +79,63 @@
 \section{\mdline{39}5.\hspace*{0.5em}\mdline{39}A-star path planning}\label{sec-a-star-path-planning}%mdk%mdk
 
 %mdk-data-line={40}
-\noindent\mdline{40}The path planning is done in array index unit in the corresponding map\mdline{40}'\mdline{40}s frame. The array indicies were converted to the coordinate in the the map\mdline{40}'\mdline{40}s frame when generating the waypoints.%mdk
+\noindent\mdline{40}The path planning is done in array index unit in the corresponding map\mdline{40}'\mdline{40}s frame. The array indicies were converted to the coordinate in the the map\mdline{40}'\mdline{40}s frame when generating the waypoints.T he waypoints were transformed into \mdline{40}\mdcode{/map}\mdline{40} frame before feeding into the move base function. \mdline{40} \mdline{40}%mdk
 
 %mdk-data-line={42}
-\mdline{42}The waypoints were transformed into \mdline{42}\mdcode{/map}\mdline{42} frame before feeding into the move base function. \mdline{42} \mdline{42}%mdk
+\section{\mdline{42}6.\hspace*{0.5em}\mdline{42}Path planning logic}\label{sec-path-planning-logic}%mdk%mdk
 
-%mdk-data-line={44}
-\section{\mdline{44}6.\hspace*{0.5em}\mdline{44}Path planning logic}\label{sec-path-planning-logic}%mdk%mdk
+%mdk-data-line={43}
+\noindent\mdline{43}The program does an initial planning in global map, then plan in local repetitively to go to the global waypoints until reaches the goal. If no path found in local, the program replan the path in global.%mdk
 
 %mdk-data-line={45}
-\noindent\mdline{45}The program does an initial planning in global map, then plan in local repetitively to go to the global waypoints until reaches the goal. If no path found in local, the program replan the path in global.%mdk
+\mdline{45}The local path planning handles dynamic obstacles.%mdk
 
 %mdk-data-line={47}
-\mdline{47}The local path planning handles dynamic obstacles.%mdk
-
-%mdk-data-line={49}
 \begin{itemize}[noitemsep,topsep=\mdcompacttopsep]%mdk
 
+%mdk-data-line={47}
+\item\mdline{47}In a while loop, search in the global map with a-star. If there is a path, extract the first waypoint.
+
+%mdk-data-line={48}
+\begin{itemize}[noitemsep,topsep=\mdcompacttopsep]%mdk
+
+%mdk-data-line={48}
+\item\mdline{48}If it is the global goal, mark done and exit the loop after finishing rest of the code.%mdk
+
 %mdk-data-line={49}
-\item\mdline{49}In a while loop, search in the global map with a-star. If there is a path, extract the first waypoint.
+\item\mdline{49}try to find a path in local map from the current pose to first waypoint in global map (local goal), with maximum distance of 1m. 
 
 %mdk-data-line={50}
 \begin{itemize}[noitemsep,topsep=\mdcompacttopsep]%mdk
 
 %mdk-data-line={50}
-\item\mdline{50}If it is the global goal, mark done and exit the loop after finishing rest of the code.%mdk
+\item\mdline{50}If path is found, execute the path. 
 
 %mdk-data-line={51}
-\item\mdline{51}try to find a path in local map from the current pose to first waypoint in global map (local goal), with maximum distance of 1m. 
-
-%mdk-data-line={52}
 \begin{itemize}[noitemsep,topsep=\mdcompacttopsep]%mdk
 
+%mdk-data-line={51}
+\item\mdline{51}If next waypoint is local goal, navigate to it and replan in global.%mdk
+%mdk
+\end{itemize}%mdk%mdk
+
 %mdk-data-line={52}
-\item\mdline{52}If path is found, execute the path. 
+\item\mdline{52}If no path is found, plan in global again. If still no path found, give up.%mdk
+%mdk
+\end{itemize}%mdk%mdk
+%mdk
+\end{itemize}%mdk%mdk
 
 %mdk-data-line={53}
-\begin{itemize}[noitemsep,topsep=\mdcompacttopsep]%mdk
-
-%mdk-data-line={53}
-\item\mdline{53}If next waypoint is local goal, navigate to it and replan in global.%mdk
-%mdk
-\end{itemize}%mdk%mdk
-
-%mdk-data-line={54}
-\item\mdline{54}If no path is found, plan in global again. If still no path found, give up.%mdk
-%mdk
-\end{itemize}%mdk%mdk
-%mdk
-\end{itemize}%mdk%mdk
-
-%mdk-data-line={55}
-\item\mdline{55}If no path found initially in global map, give up.%mdk
+\item\mdline{53}If no path found initially in global map, give up.%mdk
 %mdk
 \end{itemize}%mdk
 
-%mdk-data-line={57}
-\section{\mdline{57}7.\hspace*{0.5em}\mdline{57}Move the base}\label{sec-move-the-base}%mdk%mdk
+%mdk-data-line={55}
+\section{\mdline{55}7.\hspace*{0.5em}\mdline{55}Move the base}\label{sec-move-the-base}%mdk%mdk
 
-%mdk-data-line={58}
-\noindent\mdline{58}We created a version of the \mdline{58}\mdcode{navToPose()}\mdline{58} function that does not turn to the goal orientation when reaches the goal to use in the intermediate steps in local path following to save time. The robot only turn to goal orientation when it reaches the global goal.%mdk%mdk
+%mdk-data-line={56}
+\noindent\mdline{56}We created a version of the \mdline{56}\mdcode{navToPose()}\mdline{56} function that does not turn to the goal orientation when reaches the goal to use in the intermediate steps in local path following to save time. The robot only turn to goal orientation when it reaches the global goal.%mdk%mdk
 
 
 \end{document}
