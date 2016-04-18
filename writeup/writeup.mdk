@@ -4,7 +4,11 @@ Author        : Keshuai Xu, William Sullivan, Richard Eberheim
 [TITLE]
 
 # Rviz screenshot
+![Screenshot from 2016-04-17 22:47:49]
 
+[Screenshot from 2016-04-17 22:47:49]: images/Screenshot-from-2016-04-17-22-47-49.png "Screenshot from 2016-04-17 22:47:49" { width:auto; max-width:90% }
+
+Green is global navigable points. Orange is local navigable points. Red line is global path planning. Blue line (not shown because no path found) is local path planning.
 
 # Occupancy grid size
 The occupancy grid size was not modified because our a-star algorithm is efficient enough to handle the original number of cells. 
