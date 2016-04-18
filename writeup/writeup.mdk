@@ -8,7 +8,12 @@ Author        : Keshuai Xu, William Sullivan, Richard Eberheim
 
 [Screenshot from 2016-04-17 22:47:49]: images/Screenshot-from-2016-04-17-22-47-49.png "Screenshot from 2016-04-17 22:47:49" { width:auto; max-width:90% }
 
-Green is global navigable points. Orange is local navigable points. Red line is global path planning. Blue line (not shown because no path found) is local path planning.
+The key for the map shown above is as follows: 
+
+* The green cells are global navigable points. 
+* The orange cells are local navigable points. 
+* The red line is the global path planning. 
+* The blue line (not shown because no path was found) is the local path planning.
 
 # Occupancy grid size
 The occupancy grid size was not modified because our a-star algorithm is efficient enough to handle the original number of cells. 
@@ -16,7 +21,7 @@ The occupancy grid size was not modified because our a-star algorithm is efficie
 The global and local costmap resolution is 0.05 m.
 
 # Updated heuristic
-The new h-cost is scaled-down weighed average of the Manhattan distance and the cost from the cost map. 
+The new h-cost is the scaled-down weighed average of the Manhattan distance and the cost from the cost map. 
 ``` Python
 # fr and to are tuples (x,y)
 def gethcost(fr, to, get_cost_map_cost=None):
@@ -29,7 +34,7 @@ def gethcost(fr, to, get_cost_map_cost=None):
 ```
 
 # Reading the cost map
-In class `CostmapThing`, two callback functions was written to handle the cost map update. We subscribed to the `~costmap` and `~costmap_updates` of both local and global cost map to maintain updated copies of the cost maps. The cost maps were then binarized with a set threshold to determine the navigable area when a-star path planning is called.
+In class `CostmapThing`, two callback functions were written to handle the cost map update. We subscribed to the `~costmap` and `~costmap_updates` of both local and global cost map to maintain updated copies of the cost maps. The cost maps were then binarized with a set threshold to determine the navigable area when a-star path planning is called.
 
 # Path planning logic
 The program does an initial planning in global map, then plan in local repetitively to go to the global waypoints until reaches the goal. If no path found in local, the program replan the path in global.
