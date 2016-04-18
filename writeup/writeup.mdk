@@ -36,6 +36,11 @@ def gethcost(fr, to, get_cost_map_cost=None):
 # Reading the cost map
 In class `CostmapThing`, two callback functions were written to handle the cost map update. We subscribed to the `~costmap` and `~costmap_updates` of both local and global cost map to maintain updated copies of the cost maps. The cost maps were then binarized with a set threshold to determine the navigable area when a-star path planning is called.
 
+# A-star path planning
+The path planning is done in array index unit in the corresponding map's frame. The array indicies were converted to the coordinate in the the map's frame when generating the waypoints.
+
+The waypoints were transformed into `/map` frame before feeding into the move base function.   
+
 # Path planning logic
 The program does an initial planning in global map, then plan in local repetitively to go to the global waypoints until reaches the goal. If no path found in local, the program replan the path in global.
 
