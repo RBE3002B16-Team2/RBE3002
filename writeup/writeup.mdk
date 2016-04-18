@@ -3,11 +3,16 @@ Author        : Keshuai Xu, William Sullivan, Richard Eberheim
 
 [TITLE]
 
+# Rviz screenshot
+
+
 # Occupancy grid size
-The occupancy grid size was not modified because our a-star algorithm is efficient enough to handle the original number of cells.
+The occupancy grid size was not modified because our a-star algorithm is efficient enough to handle the original number of cells. 
+
+The global and local costmap resolution is 0.05 m.
 
 # Updated heuristic
-The new h-cost is scaled-down weighed average of the Manhattan distance and the cost from the costmap.  
+The new h-cost is scaled-down weighed average of the Manhattan distance and the cost from the cost map. 
 ``` Python
 # fr and to are tuples (x,y)
 def gethcost(fr, to, get_cost_map_cost=None):
@@ -19,4 +24,19 @@ def gethcost(fr, to, get_cost_map_cost=None):
         return abs(to[0] - fr[0]) + abs(to[1] - fr[1])
 ```
 
-[reference manual]: http://research.microsoft.com/en-us/um/people/daan/madoko/doc/reference.html  "Madoko refrence manual"
+# Reading the cost map
+In class `CostmapThing`, two callback functions was written to handle the cost map update. We subscribed to the `~costmap` and `~costmap_updates` of both local and global cost map to maintain updated copies of the cost maps. The cost maps were then binarized with a set threshold to determine the navigable area when a-star path planning is called.
+
+# Path planning logic
+The program does an initial planning in global map, then plan in local repetitively to go to the global waypoints until reaches the goal. If no path found in local, the program replan the path in global.
+
+The local path planning handles dynamic obstacles.
+
+* In a while loop, search in the global map with a-star. If there is a path, extract the first waypoint.
+  * If it is the global goal, mark done and exit the loop after finishing rest of the code.
+  * try to find a path in local map from the current pose to first waypoint in global map (local goal), with maximum distance of 1m. 
+    * If path is found, execute the path. 
+      * If next waypoint is local goal, navigate to it and replan in global.
+    * If no path is found, plan in global again. If still no path found, give up.
+* If no path found initially in global map, give up.
+
