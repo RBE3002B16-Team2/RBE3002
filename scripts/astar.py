@@ -54,13 +54,13 @@ class NoPathFoundException(Exception):
 def getNeighbors(me_gridpos, navigable_gridpos=None):
     # assert me_gridpos in navigable_gridpos
     offset = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
-    neighbor_pos = []
+    neighbor_pos = set()
     for o in offset:
         n_pos = (me_gridpos[0] + o[0], me_gridpos[1] + o[1])
         if navigable_gridpos is None:
-            neighbor_pos.append(n_pos)
+            neighbor_pos.add(n_pos)
         elif n_pos in navigable_gridpos:
-            neighbor_pos.append(n_pos)
+            neighbor_pos.add(n_pos)
     return neighbor_pos
 
 

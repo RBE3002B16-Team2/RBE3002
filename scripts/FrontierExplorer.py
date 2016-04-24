@@ -26,17 +26,20 @@ class FrontierExplorer:
         self.publish_frontiers()
 
     def publish_frontiers(self):
-        list_of_frontiers = self.make_list_of_frontiers()
-        print len(list_of_frontiers)
+        nav,unknown = self.make_gridpos_lists()
+        set_of_frontier_gridpos = self.get_set_of_frontier_gridpos(nav,unknown)
+        list_of_frontiers = self.get_list_of_frontiers(set_of_frontier_gridpos)
+
         centers = [f.get_center() for f in list_of_frontiers]
         for f in list_of_frontiers:
-            print f.gridpos_set
+            pass
+            # print f.gridpos_set
         # print centers
         active_grid_pos = []
         for f in list_of_frontiers:
             active_grid_pos += list(f.gridpos_set)
         self.publishPoints(self.frontier_center_pub, centers)
-        # self.publishPoints(self.frontier_pub, active_grid_pos)
+        self.publishPoints(self.frontier_pub, active_grid_pos)
 
         # assert len(active_grid_pos) == len(set(active_grid_pos))
 
@@ -79,23 +82,6 @@ class FrontierExplorer:
                 k += 1
 
         return nav_cells, unknown_cells
-
-    def make_list_of_frontiers(self):
-        print "begin frontiers search"
-        sys.setrecursionlimit(10000)
-        nav, unknown = self.make_gridpos_lists()
-        print len(nav)
-        print len(unknown)
-        list_of_frontiers = []
-        nav_explored = set()
-        for p in nav:
-            if p not in nav_explored:
-                f = self.fill_frontier(p, nav, unknown, nav_explored)
-
-                if len(f) > 0:
-                    list_of_frontiers.append(Frontier(gridpos_set=f))
-        print "end frontiers search"
-        return list_of_frontiers
 
     def publishPoints(self, pub, listofgridpos):
         resolution = self.og.info.resolution
@@ -141,7 +127,7 @@ class FrontierExplorer:
         else:
             return to_posestamped
 
-    def get_list_of_frontier_gridpos(self, nav, unknown):
+    def get_set_of_frontier_gridpos(self, nav, unknown):
         f = set()
         for nav_el in nav:
             neighbors = getNeighbors(nav_el)
@@ -151,32 +137,26 @@ class FrontierExplorer:
                     break
         return f
 
-    def fill_frontier(self, me, nav, unknown, explored, f=set()):
-        assert me in nav
-        # assert me not in explored
-        explored.add(me)
+    def get_list_of_frontiers(self, set_of_frontier_gridpos):
+        list_of_frontiers = []
+        sofg = copy.deepcopy(set_of_frontier_gridpos)
+        while sofg:
+            start = sofg.pop()
+            gridpos_set = self.fill_frontier_mkii(start, sofg)
+            frontier = Frontier(gridpos_set=gridpos_set)
+            list_of_frontiers.append(frontier)
+        return list_of_frontiers
 
-        neighbors = getNeighbors(me)
-        my_frontier_count = 0
-        neighbor_nav = set()
+    def fill_frontier_mkii(self, start, set_of_frontier_gridpos, cluster=None):
+        if cluster is None:
+            cluster = set()
+        set_of_frontier_gridpos.discard(start)
+        cluster.add(start)
+        neighbors = getNeighbors(start, set_of_frontier_gridpos)
         for n in neighbors:
-            if n in unknown:
-                f.add(me)
-                my_frontier_count += 1
-            elif (n not in explored) and (n in nav):
-                neighbor_nav.add(n)
-        # print my_frontier_count
-        if my_frontier_count > 0:
-            for nn in neighbor_nav:
-                if nn in explored:
-                    self.publishPoints(self.frontier_pub, neighbor_nav)
-                    print "fuck"  # something is not right
-                else:
-                    self.fill_frontier(nn, nav, unknown, explored, f=f)
-        else:
-            print "happy ending"
-        self.publishPoints(self.frontier_center_pub, f)
-        return f
+            self.fill_frontier_mkii(n, set_of_frontier_gridpos, cluster)
+        return cluster
+
 
 def getDirection(fr, to):
     dx = to[0] - fr[0]
@@ -209,5 +189,3 @@ def pose2gridpos(pose, resolution, offsetX, offsetY):
     gridx = int((pose.position.x - offsetX - (.5 * resolution)) / resolution)
     gridy = int((pose.position.y - offsetY - (.5 * resolution)) / resolution)
     return (gridx, gridy)
-
-
