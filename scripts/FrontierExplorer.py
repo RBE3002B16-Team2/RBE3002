@@ -90,7 +90,7 @@ class FrontierExplorer:
         nav_explored = set()
         for p in nav:
             if p not in nav_explored:
-                f = self.fill_frontier(p, nav, unknown, explored=nav_explored)
+                f = self.fill_frontier(p, nav, unknown, nav_explored)
 
                 if len(f) > 0:
                     list_of_frontiers.append(Frontier(gridpos_set=f))
@@ -141,11 +141,21 @@ class FrontierExplorer:
         else:
             return to_posestamped
 
-    def fill_frontier(self, me, nav, unknown, explored=set(), f=set()):
+    def get_list_of_frontier_gridpos(self, nav, unknown):
+        f = set()
+        for nav_el in nav:
+            neighbors = getNeighbors(nav_el)
+            for n in neighbors:
+                if n in unknown:
+                    f.add(nav_el)
+                    break
+        return f
+
+    def fill_frontier(self, me, nav, unknown, explored, f=set()):
         assert me in nav
         # assert me not in explored
         explored.add(me)
-        # self.publishPoints(self.frontier_center_pub, f)
+
         neighbors = getNeighbors(me)
         my_frontier_count = 0
         neighbor_nav = set()
@@ -157,12 +167,15 @@ class FrontierExplorer:
                 neighbor_nav.add(n)
         # print my_frontier_count
         if my_frontier_count > 0:
-            for n in neighbor_nav:
-                if n in explored:
-                    pass  # print "fuck"  # something is not right
+            for nn in neighbor_nav:
+                if nn in explored:
+                    self.publishPoints(self.frontier_pub, neighbor_nav)
+                    print "fuck"  # something is not right
                 else:
-                    self.fill_frontier(n, nav, unknown, explored=explored, f=f)
-
+                    self.fill_frontier(nn, nav, unknown, explored, f=f)
+        else:
+            print "happy ending"
+        self.publishPoints(self.frontier_center_pub, f)
         return f
 
 def getDirection(fr, to):
