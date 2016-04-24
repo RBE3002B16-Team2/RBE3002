@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4a8941d3-8ce3-425c-9aaf-072f53c56ecf" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/lab4main.py" afterPath="$PROJECT_DIR$/scripts/lab4main.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/Frontier.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/FrontierExplorer.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/finalmain.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/astar.py" afterPath="$PROJECT_DIR$/scripts/astar.py" />
     </list>
     <ignored path="lab3.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,16 +32,10 @@
           <file leaf-file-name="CostmapThing.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/scripts/CostmapThing.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="156">
-                  <caret line="12" column="63" selection-start-line="12" selection-start-column="63" selection-end-line="12" selection-end-column="63" />
+                <state relative-caret-position="0">
+                  <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
                   <folding>
                     <element signature="e#0#11#0" expanded="true" />
-                    <marker date="1460874655671" expanded="true" signature="331:9596" placeholder="..." />
-                    <marker date="1460874655671" expanded="true" signature="398:535" placeholder="..." />
-                    <marker date="1460874655671" expanded="true" signature="2791:4353" placeholder="..." />
-                    <marker date="1460874655671" expanded="true" signature="3693:4290" placeholder="..." />
-                    <marker date="1460874655671" expanded="true" signature="3996:4207" placeholder="..." />
-                    <marker date="1460874655671" expanded="true" signature="4225:4290" placeholder="..." />
                   </folding>
                 </state>
               </provider>
@@ -56,7 +54,7 @@
           <file leaf-file-name="transformations.py" pinned="false" current-in-tab="false">
             <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/tf/transformations.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="13">
+                <state relative-caret-position="15314">
                   <caret line="1183" column="0" selection-start-line="1183" selection-start-column="0" selection-end-line="1183" selection-end-column="0" />
                   <folding />
                 </state>
@@ -66,7 +64,7 @@
           <file leaf-file-name="numeric.py" pinned="false" current-in-tab="false">
             <entry file="file:///usr/lib/python2.7/dist-packages/numpy/core/numeric.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="13">
+                <state relative-caret-position="26572">
                   <caret line="2053" column="0" selection-start-line="2053" selection-start-column="0" selection-end-line="2053" selection-end-column="0" />
                   <folding />
                 </state>
@@ -76,8 +74,8 @@
           <file leaf-file-name="astar.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/scripts/astar.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-547">
-                  <caret line="14" column="33" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
+                <state relative-caret-position="676">
+                  <caret line="53" column="53" selection-start-line="53" selection-start-column="53" selection-end-line="53" selection-end-column="53" />
                   <folding>
                     <element signature="e#0#35#0" expanded="true" />
                   </folding>
@@ -88,8 +86,8 @@
           <file leaf-file-name="lab4main.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/scripts/lab4main.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="153">
-                  <caret line="293" column="101" selection-start-line="293" selection-start-column="101" selection-end-line="293" selection-end-column="101" />
+                <state relative-caret-position="656">
+                  <caret line="318" column="0" selection-start-line="318" selection-start-column="0" selection-end-line="320" selection-end-column="20" />
                   <folding>
                     <element signature="e#103#132#0" expanded="true" />
                   </folding>
@@ -110,7 +108,7 @@
           <file leaf-file-name="topics.py" pinned="false" current-in-tab="false">
             <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/rospy/topics.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="13">
+                <state relative-caret-position="9334">
                   <caret line="719" column="0" selection-start-line="719" selection-start-column="0" selection-end-line="719" selection-end-column="0" />
                   <folding />
                 </state>
@@ -121,14 +119,48 @@
       </split-first>
       <split-second>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="CostmapThing.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="CostmapThing.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/scripts/CostmapThing.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="184">
-                  <caret line="172" column="13" selection-start-line="172" selection-start-column="13" selection-end-line="172" selection-end-column="13" />
+                  <caret line="172" column="13" selection-start-line="0" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
                   <folding>
                     <element signature="e#0#11#0" expanded="true" />
                   </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="FrontierExplorer.py" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/scripts/FrontierExplorer.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="195">
+                  <caret line="36" column="48" selection-start-line="36" selection-start-column="48" selection-end-line="36" selection-end-column="48" />
+                  <folding>
+                    <element signature="e#0#11#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="finalmain.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/scripts/finalmain.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="65">
+                  <caret line="5" column="33" selection-start-line="5" selection-start-column="33" selection-end-line="5" selection-end-column="33" />
+                  <folding>
+                    <element signature="e#0#29#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="Frontier.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/scripts/Frontier.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="13">
+                  <caret line="1" column="34" selection-start-line="1" selection-start-column="23" selection-end-line="1" selection-end-column="34" />
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -167,16 +199,19 @@
         <option value="$PROJECT_DIR$/scripts/lab3_grid_cellsD16.py" />
         <option value="$PROJECT_DIR$/scripts/FuckTheTime.py" />
         <option value="$PROJECT_DIR$/scripts/CostmapThing.py" />
-        <option value="$PROJECT_DIR$/scripts/astar.py" />
         <option value="$PROJECT_DIR$/scripts/lab4main.py" />
+        <option value="$PROJECT_DIR$/scripts/astar.py" />
+        <option value="$PROJECT_DIR$/scripts/Frontier.py" />
+        <option value="$PROJECT_DIR$/scripts/finalmain.py" />
+        <option value="$PROJECT_DIR$/scripts/FrontierExplorer.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="125" />
-    <option name="y" value="213" />
-    <option name="width" value="1380" />
-    <option name="height" value="748" />
+    <option name="x" value="65" />
+    <option name="y" value="24" />
+    <option name="width" value="1535" />
+    <option name="height" value="876" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -203,8 +238,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -239,6 +272,8 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -246,7 +281,7 @@
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Font" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
-  <component name="RunManager" selected="Python.pathToMove">
+  <component name="RunManager" selected="Python.finalmain">
     <configuration default="false" name="lab3_grid_cellsD16" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -277,6 +312,23 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="lab3" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/lab4main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="finalmain" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scripts" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="lab3" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/finalmain.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -415,14 +467,16 @@
       <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
-    <list size="2">
+    <list size="3">
       <item index="0" class="java.lang.String" itemvalue="Python.lab3_grid_cellsD16" />
       <item index="1" class="java.lang.String" itemvalue="Python.pathToMove" />
+      <item index="2" class="java.lang.String" itemvalue="Python.finalmain" />
     </list>
     <recent_temporary>
-      <list size="2">
-        <item index="0" class="java.lang.String" itemvalue="Python.pathToMove" />
-        <item index="1" class="java.lang.String" itemvalue="Python.lab3_grid_cellsD16" />
+      <list size="3">
+        <item index="0" class="java.lang.String" itemvalue="Python.finalmain" />
+        <item index="1" class="java.lang.String" itemvalue="Python.pathToMove" />
+        <item index="2" class="java.lang.String" itemvalue="Python.lab3_grid_cellsD16" />
       </list>
     </recent_temporary>
   </component>
@@ -443,15 +497,15 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="125" y="213" width="1380" height="748" extended-state="0" />
+    <frame x="65" y="24" width="1535" height="876" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27753624" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2495114" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.43703705" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4358655" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -486,6 +540,32 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/rospy/topics.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9334">
+          <caret line="719" column="0" selection-start-line="719" selection-start-column="0" selection-end-line="719" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/CostmapThing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="52">
+          <caret line="12" column="63" selection-start-line="12" selection-start-column="63" selection-end-line="12" selection-end-column="63" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/ObstacleExpander.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="104">
+          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/tf/listener.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2431">
@@ -514,7 +594,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2834">
           <caret line="218" column="0" selection-start-line="218" selection-start-column="0" selection-end-line="218" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -522,7 +601,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1378">
           <caret line="106" column="0" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -568,12 +646,6 @@
           <caret line="147" column="18" selection-start-line="147" selection-start-column="18" selection-end-line="147" selection-end-column="18" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
-            <marker date="1460874655671" expanded="true" signature="331:9596" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="398:535" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="2791:4353" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="3693:4290" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="3996:4207" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="4225:4290" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -614,7 +686,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3924">
           <caret line="218" column="0" selection-start-line="218" selection-start-column="0" selection-end-line="218" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -622,7 +693,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1908">
           <caret line="106" column="0" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -668,12 +738,6 @@
           <caret line="147" column="18" selection-start-line="147" selection-start-column="18" selection-end-line="147" selection-end-column="18" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
-            <marker date="1460874655671" expanded="true" signature="331:9596" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="398:535" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="2791:4353" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="3693:4290" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="3996:4207" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="4225:4290" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -701,12 +765,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
-            <marker date="1460874655671" expanded="true" signature="331:9596" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="398:535" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="2791:4353" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="3693:4290" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="3996:4207" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="4225:4290" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -762,7 +820,7 @@
     </entry>
     <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/rospy/topics.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="13">
+        <state relative-caret-position="9334">
           <caret line="719" column="0" selection-start-line="719" selection-start-column="0" selection-end-line="719" selection-end-column="0" />
           <folding />
         </state>
@@ -780,7 +838,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="13">
           <caret line="218" column="0" selection-start-line="218" selection-start-column="0" selection-end-line="218" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -788,58 +845,79 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="13">
           <caret line="106" column="0" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file:///usr/lib/python2.7/dist-packages/numpy/core/numeric.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="13">
+        <state relative-caret-position="26572">
           <caret line="2053" column="0" selection-start-line="2053" selection-start-column="0" selection-end-line="2053" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/CostmapThing.py">
+    <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/tf/transformations.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="156">
-          <caret line="12" column="63" selection-start-line="12" selection-start-column="63" selection-end-line="12" selection-end-column="63" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-            <marker date="1460874655671" expanded="true" signature="331:9596" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="398:535" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="2791:4353" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="3693:4290" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="3996:4207" placeholder="..." />
-            <marker date="1460874655671" expanded="true" signature="4225:4290" placeholder="..." />
-          </folding>
+        <state relative-caret-position="15314">
+          <caret line="1183" column="0" selection-start-line="1183" selection-start-column="0" selection-end-line="1183" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/astar.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-547">
-          <caret line="14" column="33" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
+        <state relative-caret-position="676">
+          <caret line="53" column="53" selection-start-line="53" selection-start-column="53" selection-end-line="53" selection-end-column="53" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/tf/transformations.py">
+    <entry file="file://$PROJECT_DIR$/scripts/Frontier.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="13">
-          <caret line="1183" column="0" selection-start-line="1183" selection-start-column="0" selection-end-line="1183" selection-end-column="0" />
+          <caret line="1" column="34" selection-start-line="1" selection-start-column="23" selection-end-line="1" selection-end-column="34" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/lab4main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="293" column="101" selection-start-line="293" selection-start-column="101" selection-end-line="293" selection-end-column="101" />
+        <state relative-caret-position="656">
+          <caret line="318" column="0" selection-start-line="318" selection-start-column="0" selection-end-line="320" selection-end-column="20" />
           <folding>
             <element signature="e#103#132#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/CostmapThing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="172" column="13" selection-start-line="0" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/finalmain.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="65">
+          <caret line="5" column="33" selection-start-line="5" selection-start-column="33" selection-end-line="5" selection-end-column="33" />
+          <folding>
+            <element signature="e#0#29#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/FrontierExplorer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="36" column="48" selection-start-line="36" selection-start-column="48" selection-end-line="36" selection-end-column="48" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
