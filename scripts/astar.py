@@ -3,6 +3,9 @@ import math
 
 
 def aStar(navigable_gridpos, startgridpos, goalgridpos, nodes_callback=None):
+    if goalgridpos not in navigable_gridpos:
+        print 'no path found because goal not navigable'
+        raise NoPathFoundException
 
     openNodes = {}
     closedNodes = {}
@@ -35,7 +38,8 @@ def aStar(navigable_gridpos, startgridpos, goalgridpos, nodes_callback=None):
                 openNodes[n] = newNode
 
         try:
-            nodes_callback(openNodes.keys(),closedNodes.keys(),[])
+            pass
+            # nodes_callback(openNodes.keys(),closedNodes.keys(),[])
         except:
             pass
 
@@ -45,24 +49,30 @@ def aStar(navigable_gridpos, startgridpos, goalgridpos, nodes_callback=None):
 class NoPathFoundException(Exception):
     pass
 
+
 # publishes map to rviz using gridcells type
-def getNeighbors(me_gridpos, navigable_gridpos):
+def getNeighbors(me_gridpos, navigable_gridpos=None):
     # assert me_gridpos in navigable_gridpos
     offset = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
-    neighbor_pos = []
+    neighbor_pos = set()
     for o in offset:
         n_pos = (me_gridpos[0] + o[0], me_gridpos[1] + o[1])
-        if n_pos in navigable_gridpos:
-            neighbor_pos.append(n_pos)
+        if navigable_gridpos is None:
+            neighbor_pos.add(n_pos)
+        elif n_pos in navigable_gridpos:
+            neighbor_pos.add(n_pos)
     return neighbor_pos
+
 
 # fr and to are tuples (x,y)
 def gethcost(fr, to):
     return abs(to[0] - fr[0]) + abs(to[1] - fr[1])
 
+
 # fr and to are tuples (x,y)
 def getgcost(fr, to):
     return math.sqrt((to[0] - fr[0]) ** 2 + (to[1] - fr[1]) ** 2)
+
 
 # end_node: type of AStarNode. returns list of tuples (x,y) in gridpos
 def getPath(end_node):
@@ -85,6 +95,3 @@ class AStarNode:
 
     def getCost(self):
         return self.h_cost + self.g_cost
-
-
-

@@ -10,9 +10,11 @@ from FuckTheTime import fuck_the_time
 
 
 class CostmapThing:
-    def __init__(self,astarpubs=None):
+    def __init__(self, tf_listener, astarpubs=None, threshold=50):
         self.onedmap = None
         self.astarpubs = astarpubs
+        self.tf_listener = tf_listener
+        self.threshold = threshold
 
     def map_cb(self, og):
         self.og = og
@@ -52,7 +54,7 @@ class CostmapThing:
 
         for i in range(0, height):  # height should be set to hieght of grid
             for j in range(0, width):  # width should be set to width of grid
-                if self.onedmap[k] < 30:
+                if self.onedmap[k] < self.threshold:
                     cells.cells.append(getPoint((j, i), resolution, offsetX, offsetY))
                 k += 1
 
@@ -68,21 +70,21 @@ class CostmapThing:
 
         for i in range(0, height):  # height should be set to hieght of grid
             for j in range(0, width):  # width should be set to width of grid
-                if self.onedmap[k] < 30:
+                if self.onedmap[k] < self.threshold and self.onedmap[k] != -1:
                     cells.append((j, i))
                 k += 1
 
         return cells
 
     # returns PoseStamped
-    def getNextWaypoint(self, start, goal, tf_listener, dist_limit=None, pathpub=None, wppub=None):
+    def getNextWaypoint(self, start, goal, tf_listener, dist_limit=None, pathpub=None, wppub=None, skip=1):
         resolution = self.og.info.resolution
         width = self.og.info.width
         height = self.og.info.height
         offsetX = self.og.info.origin.position.x
         offsetY = self.og.info.origin.position.y
 
-        tf_listener.waitForTransform('odom','map', rospy.Time(0), rospy.Duration(10.0))
+        tf_listener.waitForTransform('odom', 'map', rospy.Time(0), rospy.Duration(10.0))
         tstart = tf_listener.transformPose(self.og.header.frame_id, fuck_the_time(start))
         tgoal = tf_listener.transformPose(self.og.header.frame_id, fuck_the_time(goal))
 
@@ -90,21 +92,63 @@ class CostmapThing:
             tgoal = self.limit_max_dist(tstart, tgoal, dist_limit)
 
         if wppub is not None:
-            wppub.publish(tgoal)
+            ttgoal = tf_listener.transformPose('map', fuck_the_time(tgoal))
+            wppub.publish(ttgoal)
 
         start_grid_pos = pose2gridpos(tstart.pose, resolution, offsetX, offsetY)
         goal_grid_pos = pose2gridpos(tgoal.pose, resolution, offsetX, offsetY)
+
         try:
             path = aStar(self.make_navigable_gridpos(), start_grid_pos, goal_grid_pos, self.astarnodescb)
-            wp = self.getWaypoints(path, goal, publisher=pathpub)
+            wp = self.getWaypoints(path, tgoal, publisher=pathpub)
             retp = PoseStamped()
             # magic number. skip a few waypoints in the beginning
-            if len(wp) > 2:
-                retp.pose = wp[2].pose
+            if len(wp) > skip:
+                retp.pose = wp[skip].pose
                 retp.header = self.og.header
+                if len(wp) == 1 and skip == 0:
+                    return (retp, True)
+                return (retp, False)
             else:
-                retp = goal
-            return retp
+                retp = tgoal
+                return (retp, True)
+
+        except NoPathFoundException as e:
+            raise e
+
+    def get_a_list_of_pose_to_goal(self, start, goal, tf_listener, dist_limit=None, pathpub=None, wppub=None, skip=1):
+        resolution = self.og.info.resolution
+        width = self.og.info.width
+        height = self.og.info.height
+        offsetX = self.og.info.origin.position.x
+        offsetY = self.og.info.origin.position.y
+
+        tf_listener.waitForTransform('odom', 'map', rospy.Time(0), rospy.Duration(10.0))
+        tstart = tf_listener.transformPose(self.og.header.frame_id, fuck_the_time(start))
+        tgoal = tf_listener.transformPose(self.og.header.frame_id, fuck_the_time(goal))
+
+        if dist_limit is not None:
+            tgoal = self.limit_max_dist(tstart, tgoal, dist_limit)
+
+        if wppub is not None:
+            ttgoal = tf_listener.transformPose('map', fuck_the_time(tgoal))
+            wppub.publish(ttgoal)
+
+        start_grid_pos = pose2gridpos(tstart.pose, resolution, offsetX, offsetY)
+        goal_grid_pos = pose2gridpos(tgoal.pose, resolution, offsetX, offsetY)
+
+        try:
+            path = aStar(self.make_navigable_gridpos(), start_grid_pos, goal_grid_pos, self.astarnodescb)
+            wp = self.getWaypoints(path, tgoal, publisher=pathpub)
+            list_of_pose = []
+            # magic number. skip a few waypoints in the beginning
+            for stuff in wp:
+                retp = PoseStamped()
+                retp.pose = stuff.pose
+                retp.header = self.og.header
+                list_of_pose.append(retp)
+            return list_of_pose
+
         except NoPathFoundException as e:
             raise e
 
@@ -134,7 +178,7 @@ class CostmapThing:
                 newPose.pose.orientation.z = quaternion[2]
                 newPose.pose.orientation.w = quaternion[3]
                 poses.append(newPose)
-        newPose = goal_pose
+        newPose = self.tf_listener.transformPose(self.og.header.frame_id, fuck_the_time(goal_pose))
         poses.append(newPose)
         wp.poses = poses
         if publisher is not None:
@@ -145,8 +189,8 @@ class CostmapThing:
         if self.astarpubs is None:
             return
         openpub, closedpub, pathpub = self.astarpubs
-        self.publishPoints(openpub,open)
-        self.publishPoints(closedpub,close)
+        self.publishPoints(openpub, open)
+        self.publishPoints(closedpub, close)
         self.publishPoints(pathpub, path)
 
     def publishPoints(self, pub, listofgridpos):
@@ -168,18 +212,31 @@ class CostmapThing:
         pub.publish(cells)
 
     def limit_max_dist(self, fr_posestamped, to_posestamped, max_dist):
+        assert fr_posestamped.header.frame_id == to_posestamped.header.frame_id
+        assert max_dist > 0
         angle = get_direction(fr_posestamped, to_posestamped)
-
-        if get_distance(fr_posestamped, to_posestamped) > max_dist:
+        dist = get_distance(fr_posestamped, to_posestamped)
+        if dist > max_dist:
+            print 'next waypoint at dist ' + str(dist) + ' limiting the dist to ' + str(max_dist)
             ps = PoseStamped()
-            ps.pose.position.x = fr_posestamped.pose.position.x + math.cos(angle) * max_dist
-            ps.pose.position.y = fr_posestamped.pose.position.y + math.sin(angle) * max_dist
-            ps.header.frame_id = self.og.header.frame_id
-            ps.pose.orientation = fr_posestamped.pose.orientation
+            ps.pose.position.x = (fr_posestamped.pose.position.x + math.cos(angle) * max_dist)
+            ps.pose.position.y = (fr_posestamped.pose.position.y + math.sin(angle) * max_dist)
+            # ps.pose.position.x = 1
+            # ps.pose.position.y = 1
+            ps.header.frame_id = fr_posestamped.header.frame_id
+
+            quaternion = tf.transformations.quaternion_from_euler(0, 0, angle)
+            ps.pose.orientation.x = quaternion[0]
+            ps.pose.orientation.y = quaternion[1]
+            ps.pose.orientation.z = quaternion[2]
+            ps.pose.orientation.w = quaternion[3]
+
             ps = fuck_the_time(ps)
+            print 'actual dist ' + str(get_distance(fr_posestamped, ps))
             return ps
         else:
             return to_posestamped
+
 
 def getDirection(fr, to):
     dx = to[0] - fr[0]
@@ -190,14 +247,13 @@ def getDirection(fr, to):
 def get_distance(fr_posestamped, to_posestamped):
     dx = fr_posestamped.pose.position.x - to_posestamped.pose.position.x
     dy = fr_posestamped.pose.position.y - to_posestamped.pose.position.y
-    return math.sqrt(dx ** 2 + dy ** 2)
+    return math.sqrt(math.pow(dx, 2) + math.pow(dy, 2))
 
 
 def get_direction(fr_posestamped, to_posestamped):
-    dx = fr_posestamped.pose.position.x - to_posestamped.pose.position.x
-    dy = fr_posestamped.pose.position.y - to_posestamped.pose.position.y
+    dx = to_posestamped.pose.position.x - fr_posestamped.pose.position.x
+    dy = to_posestamped.pose.position.y - fr_posestamped.pose.position.y
     return math.atan2(dy, dx)
-
 
 
 def getPoint(gridpos, resolution, offsetX, offsetY):
