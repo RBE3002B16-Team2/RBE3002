@@ -158,13 +158,13 @@ class FrontierExplorer:
         return cluster
 
 
-'''
-Functions thats need to be found/written/recycled/implemented:
-    get_distanceToFrontier(farthestFrontier) takes in a frontier and returns the distance to that frontoier from the robots current location
-    get_poseOfFrontier(farthestFrontier, divisor)) takes in a frontier and returns a pose in which the x and y are divided by the divisor
-    convertToStampedPose(pose) takes in a pose and returns a stamped pose
-    planToFrontierExists(frontierInQuestion) returns true of a navigatalbe path exsists to a given stampedPose
-    move_base(stapedPose) moves the robot to the given stampedPose
+
+#Functions thats need to be found/written/recycled/implemented:
+#    get_distanceToFrontier(farthestFrontier) takes in a frontier and returns the distance to that frontoier from the robots current location
+#    get_poseOfFrontier(farthestFrontier, divisor)) takes in a frontier and returns a pose in which the x and y are divided by the divisor
+#    convertToStampedPose(pose) takes in a pose and returns a stamped pose
+#    planToFrontierExists(frontierInQuestion) returns true of a navigatalbe path exsists to a given stampedPose
+#    move_base(stapedPose) moves the robot to the given stampedPose
 
 def nav2Frontier(frontiers):
     #Sets the given list of frontiers to a a temp list
@@ -179,7 +179,7 @@ def nav2Frontier(frontiers):
        
         #Gets the fartherst frontier in the list
         for f in tempFrontier:
-            if(get_distanceToFrontier(f) > get_distanceToFrontier(farthestFrontier)):
+            if(get_distanceToFrontier(f, currentRobotPoint) > get_distanceToFrontier(farthestFrontier, currentRobotPoint)):
                 farthestFrontier = f
                 
         #
@@ -189,17 +189,17 @@ def nav2Frontier(frontiers):
         
             if(planToFrontierExists(frontierInQuestion)):
                 pathHasntBeenFound = false
-                move_base to frontierInQuestion
+            #    move_base to frontierInQuestion
             else:
-                pathPlainingAttempts++
+                pathPlainingAttempts+=1
                 frontierInQuestion  = convertToStampedPose(get_poseOfFrontier(farthestFrontier, pathPlainingAttempts+2))
                 
         
         tempFrontier.remove(frontierInQuestion)
     
     print 'Error'
+   
     
-'''    
 
 
 
