@@ -159,6 +159,13 @@ class FrontierExplorer:
 
 
 '''
+Functions thats need to be found/written/recycled/implemented:
+    get_distanceToFrontier(farthestFrontier) takes in a frontier and returns the distance to that frontoier from the robots current location
+    get_poseOfFrontier(farthestFrontier, divisor)) takes in a frontier and returns a pose in which the x and y are divided by the divisor
+    convertToStampedPose(pose) takes in a pose and returns a stamped pose
+    planToFrontierExists(frontierInQuestion) returns true of a navigatalbe path exsists to a given stampedPose
+    move_base(stapedPose) moves the robot to the given stampedPose
+
 def nav2Frontier(frontiers):
     #Sets the given list of frontiers to a a temp list
     tempFrontier = frontiers
