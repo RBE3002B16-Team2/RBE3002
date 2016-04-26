@@ -158,6 +158,44 @@ class FrontierExplorer:
         return cluster
 
 
+'''
+def nav2Frontier(frontiers):
+    #Sets the given list of frontiers to a a temp list
+    tempFrontier = frontiers
+    pathHasntBeenFound = true
+    
+    #Repeats until a navigatable path has been found 
+    while(pathHasntBeenFound and (len(tempFrontier)>1)):
+        
+        #Sets the number of path planing attempts for the frontier in question equal to zero
+        pathPlainingAttempts = 0
+       
+        #Gets the fartherst frontier in the list
+        for f in tempFrontier:
+            if(get_distanceToFrontier(f) > get_distanceToFrontier(farthestFrontier)):
+                farthestFrontier = f
+                
+        #
+        while(pathPlainingAttempts < 4):
+            frontierInQuestion  = convertToStampedPose(get_poseOfFrontier(farthestFrontier, pathPlainingAttempts+2))
+            
+        
+            if(planToFrontierExists(frontierInQuestion)):
+                pathHasntBeenFound = false
+                move_base to frontierInQuestion
+            else:
+                pathPlainingAttempts++
+                frontierInQuestion  = convertToStampedPose(get_poseOfFrontier(farthestFrontier, pathPlainingAttempts+2))
+                
+        
+        tempFrontier.remove(frontierInQuestion)
+    
+    print 'Error'
+    
+'''    
+
+
+
 def getDirection(fr, to):
     dx = to[0] - fr[0]
     dy = to[1] - fr[1]
