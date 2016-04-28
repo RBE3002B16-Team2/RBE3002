@@ -43,27 +43,6 @@ class FrontierExplorer:
 
         # assert len(active_grid_pos) == len(set(active_grid_pos))
 
-    def make_grid_cell(self):
-        resolution = self.og.info.resolution
-        width = self.og.info.width
-        height = self.og.info.height
-        offsetX = self.og.info.origin.position.x
-        offsetY = self.og.info.origin.position.y
-
-        # resolution and offset of the map
-        k = 0
-        cells = GridCells()
-        cells.header = self.og.header
-        cells.cell_width = resolution
-        cells.cell_height = resolution
-
-        for i in range(0, height):  # height should be set to hieght of grid
-            for j in range(0, width):  # width should be set to width of grid
-                if self.onedmap[k] < self.threshold:
-                    cells.cells.append(getPoint((j, i), resolution, offsetX, offsetY))
-                k += 1
-
-        return cells
 
     def make_gridpos_lists(self):
         width = self.og.info.width
