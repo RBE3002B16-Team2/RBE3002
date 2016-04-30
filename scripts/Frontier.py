@@ -19,5 +19,8 @@ class Frontier:
     def get_size(self):
         return len(self.gridpos_set)
 
+    def __len__(self):
+        return self.get_size()
+
     def __contains__(self, item):
         return item in self.gridpos_set
