@@ -1,5 +1,6 @@
-#FrontierExplorer.py
 import copy
+import numpy
+
 import rospy
 from nav_msgs.msg import GridCells
 from geometry_msgs.msg import Twist, Point, Pose, PoseStamped, PoseWithCovarianceStamped
@@ -7,7 +8,7 @@ from nav_msgs.msg import Odometry, OccupancyGrid, Path
 import tf
 import math
 from FuckTheTime import fuck_the_time
-from astar import getNeighbors
+from astar import getNeighbors, getNeighborsByRadius
 from Frontier import Frontier
 import sys
 
@@ -19,52 +20,61 @@ class FrontierExplorer:
         self.threshold = threshold
         self.frontier_pub = rospy.Publisher("/frontiers", GridCells, queue_size=1)
         self.frontier_center_pub = rospy.Publisher("/frontiers_center", GridCells, queue_size=1)
+        self.bad_pub = rospy.Publisher("/bad", GridCells, queue_size=1)
+        self.actual_nav_pub = rospy.Publisher("/actual_nav", GridCells, queue_size=1)
+        self.nav_goal_candidates_pub = rospy.Publisher("/nav_goal_candidates", GridCells, queue_size=1)
         rospy.Subscriber("/map", OccupancyGrid, self.map_cb)
+        rospy.Subscriber("/odom", OccupancyGrid, self.odom_cb)
 
     def map_cb(self, og):
         self.og = og
         self.onedmap = list(og.data)
-        self.publish_frontiers()
 
-    def publish_frontiers(self):
-        nav,unknown = self.make_gridpos_lists()
-        set_of_frontier_gridpos = self.get_set_of_frontier_gridpos(nav,unknown)
+    def odom_cb(self, odom):
+        self.odom = odom
+
+    def get_nav_goal_point_candidates(self):
+        nav, unknown, obstacles = self.make_gridpos_lists()
+        set_of_frontier_gridpos = self.get_set_of_frontier_gridpos(nav, unknown)
         list_of_frontiers = self.get_list_of_frontiers(set_of_frontier_gridpos)
 
-        centers = [f.get_center() for f in list_of_frontiers]
-        for f in list_of_frontiers:
-            pass
-            # print f.gridpos_set
-        # print centers
+        list_of_big_enough_froniers = filter_small_frontiers(list_of_frontiers, 8)
+
+        bad_cells = set()
+
+        for f in set_of_frontier_gridpos | obstacles:
+            bad_cells.update(getNeighborsByRadius(f, 4, including_me=True))
+
+        centers = [f.get_center() for f in list_of_big_enough_froniers]
         active_grid_pos = []
-        for f in list_of_frontiers:
+        for f in list_of_big_enough_froniers:
             active_grid_pos += list(f.gridpos_set)
         self.publishPoints(self.frontier_center_pub, centers)
         self.publishPoints(self.frontier_pub, active_grid_pos)
+        self.publishPoints(self.bad_pub, bad_cells)
 
-        # assert len(active_grid_pos) == len(set(active_grid_pos))
+        nav_actual = nav - bad_cells
+        self.publishPoints(self.actual_nav_pub, nav_actual)
 
-    def make_grid_cell(self):
-        resolution = self.og.info.resolution
-        width = self.og.info.width
-        height = self.og.info.height
-        offsetX = self.og.info.origin.position.x
-        offsetY = self.og.info.origin.position.y
+        my_gridpos = self.get_my_gridpos()
 
-        # resolution and offset of the map
-        k = 0
-        cells = GridCells()
-        cells.header = self.og.header
-        cells.cell_width = resolution
-        cells.cell_height = resolution
+        # goal_gridpos_canidates = [find_closest_gridpos(c, nav_actual) for c in centers if ]
 
-        for i in range(0, height):  # height should be set to hieght of grid
-            for j in range(0, width):  # width should be set to width of grid
-                if self.onedmap[k] < self.threshold:
-                    cells.cells.append(getPoint((j, i), resolution, offsetX, offsetY))
-                k += 1
+        goal_gridpos_candidates_with_frontier = []
+        for i, c in enumerate(centers):
+            gp, d = find_closest_gridpos(c, nav_actual)
+            if d < 10:
+                goal_gridpos_candidates_with_frontier.append((gp, list_of_big_enough_froniers[i]))
 
-        return cells
+        goal_gridpos_candidates_with_frontier.sort(
+            key=lambda x: -len(x[1]) * 20 + get_distance_gridpos(x[0], my_gridpos))  # tune
+        goal_gridpos_candidates = [x[0] for x in goal_gridpos_candidates_with_frontier]
+        goal_point_candidates = self.publishPoints(self.nav_goal_candidates_pub,
+                                                   [gc[0] for gc in goal_gridpos_candidates])
+
+        print "Found {} frontiers, {} big enough frontiers".format(len(list_of_frontiers),
+                                                                   len(list_of_big_enough_froniers))
+        return goal_point_candidates
 
     def make_gridpos_lists(self):
         width = self.og.info.width
@@ -73,6 +83,7 @@ class FrontierExplorer:
         k = 0
         nav_cells = set()
         unknown_cells = set()
+        obstacles = set()
 
         for i in range(0, height):  # height should be set to hieght of grid
             for j in range(0, width):  # width should be set to width of grid
@@ -80,9 +91,11 @@ class FrontierExplorer:
                     unknown_cells.add((j, i))
                 elif self.onedmap[k] < self.threshold:
                     nav_cells.add((j, i))
+                else:
+                    obstacles.add((j, i))
                 k += 1
 
-        return nav_cells, unknown_cells
+        return nav_cells, unknown_cells, obstacles
 
     def publishPoints(self, pub, listofgridpos):
         resolution = self.og.info.resolution
@@ -96,11 +109,15 @@ class FrontierExplorer:
         cells.cell_width = resolution
         cells.cell_height = resolution
 
+        points = []
+
         for g in listofgridpos:
             point = getPoint(g, resolution, offsetX, offsetY)
             cells.cells.append(point)
+            points.append(point)
 
         pub.publish(cells)
+        return points
 
     def limit_max_dist(self, fr_posestamped, to_posestamped, max_dist):
         assert fr_posestamped.header.frame_id == to_posestamped.header.frame_id
@@ -158,56 +175,37 @@ class FrontierExplorer:
             self.fill_frontier_mkii(n, set_of_frontier_gridpos, cluster)
         return cluster
 
+    def get_my_gridpos(self):
+        self.tf_listener.waitForTransform('map', 'odom', rospy.Time(0), rospy.Duration(10.0))
+        ps = PoseStamped()
+        ps.pose = self.odom.pose.pose
+        ps.header = self.odom.header
+        current_pose_stamped_in_map = self.tf_listener.transformPose('/map', ps)
+        my_gridpos = pose2gridpos_og(current_pose_stamped_in_map.pose, self.og)
+        return my_gridpos
 
 
-#Functions thats need to be found/written/recycled/implemented:
-#    get_distanceToFrontier(farthestFrontier) takes in a frontier and returns the distance to that frontoier from the robots current location
-#    get_poseOfFrontier(farthestFrontier, divisor)) takes in a frontier and returns a pose in which the x and y are divided by the divisor
-#    convertToStampedPose(pose) takes in a pose and returns a stamped pose
-#    planToFrontierExists(frontierInQuestion) returns true of a navigatalbe path exsists to a given stampedPose
-#    move_base(stapedPose) moves the robot to the given stampedPose
-
-def nav2Frontier(frontiers):
-    #Sets the given list of frontiers to a a temp list
-    tempFrontier = frontiers
-    pathHasntBeenFound = true
-    
-    #Repeats until a navigatable path has been found 
-    while(pathHasntBeenFound and (len(tempFrontier)>1)):
-        
-        #Sets the number of path planing attempts for the frontier in question equal to zero
-        pathPlainingAttempts = 0
-       
-        #Gets the fartherst frontier in the list
-        for f in tempFrontier:
-            if(get_distanceToFrontier(f, currentRobotPoint) > get_distanceToFrontier(farthestFrontier, currentRobotPoint)):
-                farthestFrontier = f
-                
-        #
-        while(pathPlainingAttempts < 4):
-            frontierInQuestion  = convertToStampedPose(get_poseOfFrontier(farthestFrontier, pathPlainingAttempts+2))
-            
-        
-            if(planToFrontierExists(frontierInQuestion)):
-                pathHasntBeenFound = false
-            #    move_base to frontierInQuestion
-            else:
-                pathPlainingAttempts+=1
-                frontierInQuestion  = convertToStampedPose(get_poseOfFrontier(farthestFrontier, pathPlainingAttempts+2))
-                
-        
-        tempFrontier.remove(frontierInQuestion)
-    
-    print 'Error'
-   
-    
+def find_closest_gridpos(me, in_where):
+    nodes = numpy.asarray(list(in_where))
+    dist_squared = numpy.sum((in_where - me) ** 2, axis=1)
+    i = numpy.argmin(dist_squared)
+    return tuple(nodes[i]), numpy.sqrt(dist_squared[i])
 
 
+def filter_small_frontiers(frontiers, min_size):
+    return [f for f in frontiers if f.get_size() >= min_size]
 
-def getDirection(fr, to):
+
+def get_direction_gridpos(fr, to):
     dx = to[0] - fr[0]
     dy = to[1] - fr[1]
     return math.atan2(dy, dx)
+
+
+def get_distance_gridpos(fr, to):
+    dx = to[0] - fr[0]
+    dy = to[1] - fr[1]
+    return math.sqrt(dx ** 2 + dy ** 2)
 
 
 def get_distance(fr_posestamped, to_posestamped):
@@ -235,3 +233,12 @@ def pose2gridpos(pose, resolution, offsetX, offsetY):
     gridx = int((pose.position.x - offsetX - (.5 * resolution)) / resolution)
     gridy = int((pose.position.y - offsetY - (.5 * resolution)) / resolution)
     return (gridx, gridy)
+
+
+def pose2gridpos_og(pose, og):
+    resolution = og.info.resolution
+    width = og.info.width
+    height = og.info.height
+    offsetX = og.info.origin.position.x
+    offsetY = og.info.origin.position.y
+    return pose2gridpos(pose, resolution, offsetX, offsetY)

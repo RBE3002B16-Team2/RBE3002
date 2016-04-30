@@ -1,3 +1,4 @@
+import itertools
 from geometry_msgs.msg import Point
 import math
 
@@ -63,6 +64,19 @@ def getNeighbors(me_gridpos, navigable_gridpos=None):
             neighbor_pos.add(n_pos)
     return neighbor_pos
 
+def getNeighborsByRadius(me_gridpos, radius, including_me=False):
+    # assert me_gridpos in navigable_gridpos
+    offset_x = range(-radius,radius+1)
+    offset_prod = itertools.product(offset_x,offset_x)
+
+    neighbor_pos = set()
+    for o in offset_prod:
+        if o[0]**2 + o[1]**2 <= radius**2:
+            n_pos = (me_gridpos[0] + o[0], me_gridpos[1] + o[1])
+            if not including_me and o[0] == 0 and o[1] == 0:
+                continue
+            neighbor_pos.add(n_pos)
+    return neighbor_pos
 
 # fr and to are tuples (x,y)
 def gethcost(fr, to):
