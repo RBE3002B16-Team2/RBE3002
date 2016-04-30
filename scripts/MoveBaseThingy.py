@@ -34,5 +34,39 @@ class MoveBaseThingy:
     spin about 360 degrees
     blocks until done
     '''
-    def spin(self):
-        pass
+    def spin(self, currentpose):
+        quat = tf.transformations.quaternion_from_euler(0, 0, 0)
+        goal = MoveBaseGoal()
+        goal.target_pose = currentpose
+        goal.target_pose.pose.orientation.x = quat[0]
+        goal.target_pose.pose.orientation.y = quat[1]
+        goal.target_pose.pose.orientation.z = quat[2]
+        goal.target_pose.pose.orientation.w = quat[3]
+        self.go_to(goal)
+        
+        quat = tf.transformations.quaternion_from_euler(0, 0, 120)
+        goal = MoveBaseGoal()
+        goal.target_pose = currentpose
+        goal.target_pose.pose.orientation.x = quat[0]
+        goal.target_pose.pose.orientation.y = quat[1]
+        goal.target_pose.pose.orientation.z = quat[2]
+        goal.target_pose.pose.orientation.w = quat[3]
+        self.go_to(goal)
+        
+        quat = tf.transformations.quaternion_from_euler(0, 0, 240)
+        goal = MoveBaseGoal()
+        goal.target_pose = currentpose
+        goal.target_pose.pose.orientation.x = quat[0]
+        goal.target_pose.pose.orientation.y = quat[1]
+        goal.target_pose.pose.orientation.z = quat[2]
+        goal.target_pose.pose.orientation.w = quat[3]
+        self.go_to(goal)
+        
+        quat = tf.transformations.quaternion_from_euler(0, 0, 360)
+        goal = MoveBaseGoal()
+        goal.target_pose = currentpose
+        goal.target_pose.pose.orientation.x = quat[0]
+        goal.target_pose.pose.orientation.y = quat[1]
+        goal.target_pose.pose.orientation.z = quat[2]
+        goal.target_pose.pose.orientation.w = quat[3]
+        self.go_to(goal)
