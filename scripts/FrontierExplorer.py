@@ -6,7 +6,7 @@ from nav_msgs.msg import Odometry, OccupancyGrid, Path
 import tf
 import math
 from FuckTheTime import fuck_the_time
-from astar import getNeighbors
+from astar import getNeighbors, getNeighborsByRadius
 from Frontier import Frontier
 import sys
 
@@ -18,6 +18,7 @@ class FrontierExplorer:
         self.threshold = threshold
         self.frontier_pub = rospy.Publisher("/frontiers", GridCells, queue_size=1)
         self.frontier_center_pub = rospy.Publisher("/frontiers_center", GridCells, queue_size=1)
+        self.bad_pub = rospy.Publisher("/bad", GridCells, queue_size=1)
         rospy.Subscriber("/map", OccupancyGrid, self.map_cb)
 
     def map_cb(self, og):
@@ -26,9 +27,15 @@ class FrontierExplorer:
         self.publish_frontiers()
 
     def publish_frontiers(self):
-        nav,unknown = self.make_gridpos_lists()
-        set_of_frontier_gridpos = self.get_set_of_frontier_gridpos(nav,unknown)
+        print "s"
+        nav, unknown, obstacles = self.make_gridpos_lists()
+        set_of_frontier_gridpos = self.get_set_of_frontier_gridpos(nav, unknown)
         list_of_frontiers = self.get_list_of_frontiers(set_of_frontier_gridpos)
+
+        bad_cells = set()
+
+        for f in set_of_frontier_gridpos | obstacles:
+            bad_cells.update(getNeighborsByRadius(f, 4, including_me=True))
 
         centers = [f.get_center() for f in list_of_frontiers]
         for f in list_of_frontiers:
@@ -40,9 +47,9 @@ class FrontierExplorer:
             active_grid_pos += list(f.gridpos_set)
         self.publishPoints(self.frontier_center_pub, centers)
         self.publishPoints(self.frontier_pub, active_grid_pos)
-
+        self.publishPoints(self.bad_pub, bad_cells)
+        print "e"
         # assert len(active_grid_pos) == len(set(active_grid_pos))
-
 
     def make_gridpos_lists(self):
         width = self.og.info.width
@@ -51,6 +58,8 @@ class FrontierExplorer:
         k = 0
         nav_cells = set()
         unknown_cells = set()
+        obstacles = set()
+
 
         for i in range(0, height):  # height should be set to hieght of grid
             for j in range(0, width):  # width should be set to width of grid
@@ -58,9 +67,11 @@ class FrontierExplorer:
                     unknown_cells.add((j, i))
                 elif self.onedmap[k] < self.threshold:
                     nav_cells.add((j, i))
+                else:
+                    obstacles.add((j,i))
                 k += 1
 
-        return nav_cells, unknown_cells
+        return nav_cells, unknown_cells, obstacles
 
     def publishPoints(self, pub, listofgridpos):
         resolution = self.og.info.resolution
