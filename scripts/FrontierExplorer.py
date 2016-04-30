@@ -10,7 +10,6 @@ import math
 from FuckTheTime import fuck_the_time
 from astar import getNeighbors, getNeighborsByRadius
 from Frontier import Frontier
-import sys
 
 
 class FrontierExplorer:
@@ -85,7 +84,14 @@ class FrontierExplorer:
         return goal_point_candidates
 
     def cost_goal(self, my_gridpos, x):
-        return -len(x[1]) * 20 + get_distance_gridpos(x[0], my_gridpos)
+        dist = get_distance_gridpos(x[0], my_gridpos)
+        low_dist_pentalty_th = 10
+        if dist < low_dist_pentalty_th:
+            dist = abs(low_dist_pentalty_th-dist)*100
+        else:
+            dist -= low_dist_pentalty_th
+
+        return -len(x[1]) * 20 + dist
         # return get_distance_gridpos(x[0], my_gridpos)
 
     def make_gridpos_lists(self):

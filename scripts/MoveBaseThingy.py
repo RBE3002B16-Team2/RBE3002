@@ -1,22 +1,33 @@
-import actionlib
 import rospy
+import actionlib
+import tf
+from move_base_msgs.msg import MoveBaseGoal, MoveBaseAction
+from geometry_msgs.msg import Pose, Point
+from actionlib_msgs.msg import GoalStatus
+
 
 class MoveBaseThingy:
     def __init__(self):
-        pass
+        self.movebase = actionlib.SimpleActionClient("move_base", MoveBaseAction)
+        print 'waiting for move base...'
+        self.movebase.wait_for_server()
+        print 'move base action server found'
+
 
     '''
     PoseStamped goal
     returns int GoalStatus from the status
     This method should block until nav done or aborted
     '''
-    def go_to(self, nav_pose, timeout=0):
-        move_base_client = actionlib.SimpleActionClient('move_base_local', MoveBaseAction)
-        move_base_client.wait_for_server()
+    def go_to(self, goal_posestamped, timeout=0):
         goal = MoveBaseGoal()
-        goal.target_pose = nav_pose
-        #send the goal and wait for the base to get there
-        move_base_client.send_goal_and_wait(goal)
+        goal.target_pose = goal_posestamped
+        self.movebase.send_goal(goal)
+        self.movebase.wait_for_result()  # timeout maybe?
+        result = self.movebase.get_goal_status_text()
+        print 'move_base ' + result
+        resultcode = self.movebase.get_state()
+        return resultcode
 
 
     '''
@@ -25,15 +36,3 @@ class MoveBaseThingy:
     '''
     def spin(self):
         pass
-
-if __name__ == '__main__':
-    print "Starting MoveBaseThingy"
-    rospy.init_node('MoveBaseThingy')
-    rospy.sleep(10)
-    goal = MoveBaseGoal()
-    goal.target_pose.header.frame_id = 'base_link'
-    goal.target_pose.pose.position.x = 1.0
-    goal.target_pose.pose.orientation.w = 1.0
-    go_to(goal, 10)
-    while not rospy.is_shutdown():
-        rospy.spin()
