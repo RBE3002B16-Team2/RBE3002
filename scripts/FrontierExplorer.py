@@ -23,8 +23,17 @@ class FrontierExplorer:
         self.bad_pub = rospy.Publisher("/bad", GridCells, queue_size=1)
         self.actual_nav_pub = rospy.Publisher("/actual_nav", GridCells, queue_size=1)
         self.nav_goal_candidates_pub = rospy.Publisher("/nav_goal_candidates", GridCells, queue_size=1)
+
+        self.odom = None
+        self.og = None
+
         rospy.Subscriber("/map", OccupancyGrid, self.map_cb)
-        rospy.Subscriber("/odom", OccupancyGrid, self.odom_cb)
+        rospy.Subscriber("/odom", Odometry, self.odom_cb)
+
+        while self.odom is None or self.og is None:
+            rospy.sleep(0.1)
+
+        print "odom and map received"
 
     def map_cb(self, og):
         self.og = og
@@ -67,14 +76,17 @@ class FrontierExplorer:
                 goal_gridpos_candidates_with_frontier.append((gp, list_of_big_enough_froniers[i]))
 
         goal_gridpos_candidates_with_frontier.sort(
-            key=lambda x: -len(x[1]) * 20 + get_distance_gridpos(x[0], my_gridpos))  # tune
+            key=lambda x: self.cost_goal(my_gridpos, x), reverse=False)
         goal_gridpos_candidates = [x[0] for x in goal_gridpos_candidates_with_frontier]
-        goal_point_candidates = self.publishPoints(self.nav_goal_candidates_pub,
-                                                   [gc[0] for gc in goal_gridpos_candidates])
+        goal_point_candidates = self.publishPoints(self.nav_goal_candidates_pub, goal_gridpos_candidates)
 
         print "Found {} frontiers, {} big enough frontiers".format(len(list_of_frontiers),
                                                                    len(list_of_big_enough_froniers))
         return goal_point_candidates
+
+    def cost_goal(self, my_gridpos, x):
+        return -len(x[1]) * 20 + get_distance_gridpos(x[0], my_gridpos)
+        # return get_distance_gridpos(x[0], my_gridpos)
 
     def make_gridpos_lists(self):
         width = self.og.info.width
@@ -180,14 +192,15 @@ class FrontierExplorer:
         ps = PoseStamped()
         ps.pose = self.odom.pose.pose
         ps.header = self.odom.header
-        current_pose_stamped_in_map = self.tf_listener.transformPose('/map', ps)
+        current_pose_stamped_in_map = self.tf_listener.transformPose('/map', fuck_the_time(ps))
         my_gridpos = pose2gridpos_og(current_pose_stamped_in_map.pose, self.og)
         return my_gridpos
 
 
 def find_closest_gridpos(me, in_where):
     nodes = numpy.asarray(list(in_where))
-    dist_squared = numpy.sum((in_where - me) ** 2, axis=1)
+    me = numpy.asarray(me)
+    dist_squared = numpy.sum((nodes - me) ** 2, axis=1)
     i = numpy.argmin(dist_squared)
     return tuple(nodes[i]), numpy.sqrt(dist_squared[i])
 
