@@ -56,6 +56,12 @@ class NavNode(object):
         goal.target_pose.pose.orientation.z = quat[2]
         goal.target_pose.pose.orientation.w = quat[3]
         return goal
+        
+        
+    def spin_robot(self, theta):
+        self.ac.
+        goto_point(goal_message(0, 0, 0, theta))
+            
 
     def goto_point(self, goal):
 
@@ -88,6 +94,8 @@ if __name__ == "__main__":
     nav_node = NavNode()
     testGoal = nav_node.goal_message(1, 1, 90)
     nav_node.goto_point(testGoal)
+    nav_node.spin_robot(90)
+    
 #    if len(sys.argv) == 3:
 #        nav_node.goto_point(float(sys.argv[1]), float(sys.argv[2]))
 #    else:
