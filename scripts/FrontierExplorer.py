@@ -1,4 +1,6 @@
 import copy
+import numpy
+
 import rospy
 from nav_msgs.msg import GridCells
 from geometry_msgs.msg import Twist, Point, Pose, PoseStamped, PoseWithCovarianceStamped
@@ -19,37 +21,60 @@ class FrontierExplorer:
         self.frontier_pub = rospy.Publisher("/frontiers", GridCells, queue_size=1)
         self.frontier_center_pub = rospy.Publisher("/frontiers_center", GridCells, queue_size=1)
         self.bad_pub = rospy.Publisher("/bad", GridCells, queue_size=1)
+        self.actual_nav_pub = rospy.Publisher("/actual_nav", GridCells, queue_size=1)
+        self.nav_goal_candidates_pub = rospy.Publisher("/nav_goal_candidates", GridCells, queue_size=1)
         rospy.Subscriber("/map", OccupancyGrid, self.map_cb)
+        rospy.Subscriber("/odom", OccupancyGrid, self.odom_cb)
 
     def map_cb(self, og):
         self.og = og
         self.onedmap = list(og.data)
-        self.publish_frontiers()
 
-    def publish_frontiers(self):
-        print "s"
+    def odom_cb(self, odom):
+        self.odom = odom
+
+    def get_nav_goal_point_candidates(self):
         nav, unknown, obstacles = self.make_gridpos_lists()
         set_of_frontier_gridpos = self.get_set_of_frontier_gridpos(nav, unknown)
         list_of_frontiers = self.get_list_of_frontiers(set_of_frontier_gridpos)
+
+        list_of_big_enough_froniers = filter_small_frontiers(list_of_frontiers, 8)
 
         bad_cells = set()
 
         for f in set_of_frontier_gridpos | obstacles:
             bad_cells.update(getNeighborsByRadius(f, 4, including_me=True))
 
-        centers = [f.get_center() for f in list_of_frontiers]
-        for f in list_of_frontiers:
-            pass
-            # print f.gridpos_set
-        # print centers
+        centers = [f.get_center() for f in list_of_big_enough_froniers]
         active_grid_pos = []
-        for f in list_of_frontiers:
+        for f in list_of_big_enough_froniers:
             active_grid_pos += list(f.gridpos_set)
         self.publishPoints(self.frontier_center_pub, centers)
         self.publishPoints(self.frontier_pub, active_grid_pos)
         self.publishPoints(self.bad_pub, bad_cells)
-        print "e"
-        # assert len(active_grid_pos) == len(set(active_grid_pos))
+
+        nav_actual = nav - bad_cells
+        self.publishPoints(self.actual_nav_pub, nav_actual)
+
+        my_gridpos = self.get_my_gridpos()
+
+        # goal_gridpos_canidates = [find_closest_gridpos(c, nav_actual) for c in centers if ]
+
+        goal_gridpos_candidates_with_frontier = []
+        for i, c in enumerate(centers):
+            gp, d = find_closest_gridpos(c, nav_actual)
+            if d < 10:
+                goal_gridpos_candidates_with_frontier.append((gp, list_of_big_enough_froniers[i]))
+
+        goal_gridpos_candidates_with_frontier.sort(
+            key=lambda x: -len(x[1]) * 20 + get_distance_gridpos(x[0], my_gridpos))  # tune
+        goal_gridpos_candidates = [x[0] for x in goal_gridpos_candidates_with_frontier]
+        goal_point_candidates = self.publishPoints(self.nav_goal_candidates_pub,
+                                                   [gc[0] for gc in goal_gridpos_candidates])
+
+        print "Found {} frontiers, {} big enough frontiers".format(len(list_of_frontiers),
+                                                                   len(list_of_big_enough_froniers))
+        return goal_point_candidates
 
     def make_gridpos_lists(self):
         width = self.og.info.width
@@ -60,7 +85,6 @@ class FrontierExplorer:
         unknown_cells = set()
         obstacles = set()
 
-
         for i in range(0, height):  # height should be set to hieght of grid
             for j in range(0, width):  # width should be set to width of grid
                 if self.onedmap[k] == -1:
@@ -68,7 +92,7 @@ class FrontierExplorer:
                 elif self.onedmap[k] < self.threshold:
                     nav_cells.add((j, i))
                 else:
-                    obstacles.add((j,i))
+                    obstacles.add((j, i))
                 k += 1
 
         return nav_cells, unknown_cells, obstacles
@@ -85,11 +109,15 @@ class FrontierExplorer:
         cells.cell_width = resolution
         cells.cell_height = resolution
 
+        points = []
+
         for g in listofgridpos:
             point = getPoint(g, resolution, offsetX, offsetY)
             cells.cells.append(point)
+            points.append(point)
 
         pub.publish(cells)
+        return points
 
     def limit_max_dist(self, fr_posestamped, to_posestamped, max_dist):
         assert fr_posestamped.header.frame_id == to_posestamped.header.frame_id
@@ -147,11 +175,37 @@ class FrontierExplorer:
             self.fill_frontier_mkii(n, set_of_frontier_gridpos, cluster)
         return cluster
 
+    def get_my_gridpos(self):
+        self.tf_listener.waitForTransform('map', 'odom', rospy.Time(0), rospy.Duration(10.0))
+        ps = PoseStamped()
+        ps.pose = self.odom.pose.pose
+        ps.header = self.odom.header
+        current_pose_stamped_in_map = self.tf_listener.transformPose('/map', ps)
+        my_gridpos = pose2gridpos_og(current_pose_stamped_in_map.pose, self.og)
+        return my_gridpos
 
-def getDirection(fr, to):
+
+def find_closest_gridpos(me, in_where):
+    nodes = numpy.asarray(list(in_where))
+    dist_squared = numpy.sum((in_where - me) ** 2, axis=1)
+    i = numpy.argmin(dist_squared)
+    return tuple(nodes[i]), numpy.sqrt(dist_squared[i])
+
+
+def filter_small_frontiers(frontiers, min_size):
+    return [f for f in frontiers if f.get_size() >= min_size]
+
+
+def get_direction_gridpos(fr, to):
     dx = to[0] - fr[0]
     dy = to[1] - fr[1]
     return math.atan2(dy, dx)
+
+
+def get_distance_gridpos(fr, to):
+    dx = to[0] - fr[0]
+    dy = to[1] - fr[1]
+    return math.sqrt(dx ** 2 + dy ** 2)
 
 
 def get_distance(fr_posestamped, to_posestamped):
@@ -179,3 +233,12 @@ def pose2gridpos(pose, resolution, offsetX, offsetY):
     gridx = int((pose.position.x - offsetX - (.5 * resolution)) / resolution)
     gridy = int((pose.position.y - offsetY - (.5 * resolution)) / resolution)
     return (gridx, gridy)
+
+
+def pose2gridpos_og(pose, og):
+    resolution = og.info.resolution
+    width = og.info.width
+    height = og.info.height
+    offsetX = og.info.origin.position.x
+    offsetY = og.info.origin.position.y
+    return pose2gridpos(pose, resolution, offsetX, offsetY)

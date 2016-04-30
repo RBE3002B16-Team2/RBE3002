@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4a8941d3-8ce3-425c-9aaf-072f53c56ecf" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/MoveBaseThingy.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/FrontierExplorer.py" afterPath="$PROJECT_DIR$/scripts/FrontierExplorer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/astar.py" afterPath="$PROJECT_DIR$/scripts/astar.py" />
     </list>
     <ignored path="lab3.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -32,7 +29,7 @@
             <entry file="file://$PROJECT_DIR$/scripts/CostmapThing.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="0">
-                  <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+                  <caret line="0" column="0" selection-start-line="119" selection-start-column="0" selection-end-line="123" selection-end-column="48" />
                   <folding>
                     <element signature="e#0#11#0" expanded="true" />
                   </folding>
@@ -43,8 +40,8 @@
           <file leaf-file-name="listener.py" pinned="false" current-in-tab="false">
             <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/tf/listener.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="2431">
-                  <caret line="187" column="0" selection-start-line="187" selection-start-column="0" selection-end-line="187" selection-end-column="0" />
+                <state relative-caret-position="2379">
+                  <caret line="183" column="0" selection-start-line="183" selection-start-column="0" selection-end-line="183" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
@@ -70,11 +67,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="astar.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="astar.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/scripts/astar.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1">
-                  <caret line="77" column="35" selection-start-line="77" selection-start-column="35" selection-end-line="77" selection-end-column="35" />
+                <state relative-caret-position="209">
+                  <caret line="93" column="35" selection-start-line="93" selection-start-column="35" selection-end-line="93" selection-end-column="35" />
                   <folding>
                     <element signature="e#0#16#0" expanded="true" />
                   </folding>
@@ -82,11 +79,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="lab4main.py" pinned="false" current-in-tab="false">
+          <file leaf-file-name="lab4main.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/scripts/lab4main.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="4134">
-                  <caret line="318" column="0" selection-start-line="318" selection-start-column="0" selection-end-line="320" selection-end-column="20" />
+                <state relative-caret-position="202">
+                  <caret line="167" column="92" selection-start-line="167" selection-start-column="4" selection-end-line="167" selection-end-column="92" />
                   <folding>
                     <element signature="e#103#132#0" expanded="true" />
                   </folding>
@@ -121,8 +118,8 @@
           <file leaf-file-name="CostmapThing.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/scripts/CostmapThing.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="2236">
-                  <caret line="172" column="13" selection-start-line="0" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+                <state relative-caret-position="176">
+                  <caret line="119" column="0" selection-start-line="119" selection-start-column="0" selection-end-line="123" selection-end-column="48" />
                   <folding>
                     <element signature="e#0#11#0" expanded="true" />
                   </folding>
@@ -133,8 +130,8 @@
           <file leaf-file-name="FrontierExplorer.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/scripts/FrontierExplorer.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="299">
-                  <caret line="50" column="16" selection-start-line="50" selection-start-column="16" selection-end-line="50" selection-end-column="16" />
+                <state relative-caret-position="359">
+                  <caret line="30" column="36" selection-start-line="30" selection-start-column="36" selection-end-line="30" selection-end-column="36" />
                   <folding>
                     <element signature="e#0#11#0" expanded="true" />
                   </folding>
@@ -164,11 +161,21 @@
               </provider>
             </entry>
           </file>
+          <file leaf-file-name="ObstacleExpander.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/scripts/ObstacleExpander.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="156">
+                  <caret line="21" column="39" selection-start-line="21" selection-start-column="39" selection-end-line="21" selection-end-column="39" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
           <file leaf-file-name="Frontier.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/scripts/Frontier.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="13">
-                  <caret line="1" column="34" selection-start-line="1" selection-start-column="23" selection-end-line="1" selection-end-column="34" />
+                <state relative-caret-position="182">
+                  <caret line="14" column="36" selection-start-line="14" selection-start-column="36" selection-end-line="14" selection-end-column="36" />
                   <folding />
                 </state>
               </provider>
@@ -199,10 +206,11 @@
         <option value="$PROJECT_DIR$/scripts/FuckTheTime.py" />
         <option value="$PROJECT_DIR$/scripts/CostmapThing.py" />
         <option value="$PROJECT_DIR$/scripts/lab4main.py" />
-        <option value="$PROJECT_DIR$/scripts/Frontier.py" />
         <option value="$PROJECT_DIR$/scripts/finalmain.py" />
         <option value="$PROJECT_DIR$/scripts/MoveBaseThingy.py" />
         <option value="$PROJECT_DIR$/scripts/astar.py" />
+        <option value="$PROJECT_DIR$/scripts/MoveTheShit.py" />
+        <option value="$PROJECT_DIR$/scripts/Frontier.py" />
         <option value="$PROJECT_DIR$/scripts/FrontierExplorer.py" />
       </list>
     </option>
@@ -506,7 +514,7 @@
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31382316" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31257784" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -540,16 +548,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/scripts/CostmapThing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="52">
-          <caret line="12" column="63" selection-start-line="12" selection-start-column="63" selection-end-line="12" selection-end-column="63" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/ObstacleExpander.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="104">
@@ -796,8 +794,8 @@
     </entry>
     <entry file="file:///opt/ros/indigo/lib/python2.7/dist-packages/tf/listener.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2431">
-          <caret line="187" column="0" selection-start-line="187" selection-start-column="0" selection-end-line="187" selection-end-column="0" />
+        <state relative-caret-position="2379">
+          <caret line="183" column="0" selection-start-line="183" selection-start-column="0" selection-end-line="183" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -848,23 +846,49 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/CostmapThing.py">
+    <entry file="file://$PROJECT_DIR$/scripts/MoveTheShit.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2236">
-          <caret line="172" column="13" selection-start-line="0" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+        <state relative-caret-position="65">
+          <caret line="5" column="12" selection-start-line="5" selection-start-column="12" selection-end-line="5" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/astar.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="93" column="35" selection-start-line="93" selection-start-column="35" selection-end-line="93" selection-end-column="35" />
           <folding>
-            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#0#16#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/lab4main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4134">
-          <caret line="318" column="0" selection-start-line="318" selection-start-column="0" selection-end-line="320" selection-end-column="20" />
+        <state relative-caret-position="202">
+          <caret line="167" column="92" selection-start-line="167" selection-start-column="4" selection-end-line="167" selection-end-column="92" />
           <folding>
             <element signature="e#103#132#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/CostmapThing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="119" column="0" selection-start-line="119" selection-start-column="0" selection-end-line="123" selection-end-column="48" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/Frontier.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="14" column="36" selection-start-line="14" selection-start-column="36" selection-end-line="14" selection-end-column="36" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -872,14 +896,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="156">
           <caret line="21" column="39" selection-start-line="21" selection-start-column="39" selection-end-line="21" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/Frontier.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="13">
-          <caret line="1" column="34" selection-start-line="1" selection-start-column="23" selection-end-line="1" selection-end-column="34" />
           <folding />
         </state>
       </provider>
@@ -902,20 +918,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/astar.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1">
-          <caret line="77" column="35" selection-start-line="77" selection-start-column="35" selection-end-line="77" selection-end-column="35" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/FrontierExplorer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="50" column="16" selection-start-line="50" selection-start-column="16" selection-end-line="50" selection-end-column="16" />
+        <state relative-caret-position="359">
+          <caret line="30" column="36" selection-start-line="30" selection-start-column="36" selection-end-line="30" selection-end-column="36" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
