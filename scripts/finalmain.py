@@ -40,8 +40,7 @@ class Final3002:
             if r is False:
                 if give_up_count > 0:
                     give_up_count -= 1
-                    print "Got stuck. retry"
-                    continue
+                    print "Got stuck. retry. remaining: " + repr(give_up_count)
                 else:
                     print "Got stuck. give up"
                     return

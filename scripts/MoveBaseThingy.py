@@ -24,10 +24,10 @@ class MoveBaseThingy:
         goal.target_pose = goal_posestamped
         self.movebase.send_goal(goal)
         self.movebase.wait_for_result()  # timeout maybe?
-        result = self.movebase.get_goal_status_text()
-        print 'move_base ' + result
+        # result = self.movebase.get_goal_status_text()
+        # print 'move_base ' + result
         resultcode = self.movebase.get_state()
-        print 'result code ' + repr(resultcode)
+        # print 'result code ' + repr(resultcode)
         return resultcode
 
     '''
@@ -36,7 +36,7 @@ class MoveBaseThingy:
     '''
 
     def spin(self, currentpose):
-        for angle in [0, math.pi*2/3, math.pi*4/3, math.pi*2]:
+        for angle in [math.pi*2/3, math.pi*4/3, math.pi*2]:
             quat = tf.transformations.quaternion_from_euler(0, 0, angle)
             currentpose.pose.orientation.x = quat[0]
             currentpose.pose.orientation.y = quat[1]

@@ -43,7 +43,7 @@ class FrontierExplorer:
 
     def get_nav_goal_point_candidates(self):
         nav, unknown, obstacles = self.make_gridpos_lists()
-        set_of_frontier_gridpos = self.get_set_of_frontier_gridpos(nav, unknown)
+        set_of_frontier_gridpos = get_set_of_frontier_gridpos(nav, unknown)
         list_of_frontiers = self.get_list_of_frontiers(set_of_frontier_gridpos)
 
         list_of_big_enough_froniers = filter_small_frontiers(list_of_frontiers, 8)
@@ -66,12 +66,10 @@ class FrontierExplorer:
 
         my_gridpos = self.get_my_gridpos()
 
-        # goal_gridpos_canidates = [find_closest_gridpos(c, nav_actual) for c in centers if ]
-
         goal_gridpos_candidates_with_frontier = []
         for i, c in enumerate(centers):
             gp, d = find_closest_gridpos(c, nav_actual)
-            if d < 10:
+            if d < 8:
                 goal_gridpos_candidates_with_frontier.append((gp, list_of_big_enough_froniers[i]))
 
         goal_gridpos_candidates_with_frontier.sort(
@@ -87,7 +85,7 @@ class FrontierExplorer:
         dist = get_distance_gridpos(x[0], my_gridpos)
         low_dist_pentalty_th = 10
         if dist < low_dist_pentalty_th:
-            dist = abs(low_dist_pentalty_th-dist)*100
+            dist = abs(low_dist_pentalty_th - dist) * 100
         else:
             dist -= low_dist_pentalty_th
 
@@ -163,16 +161,6 @@ class FrontierExplorer:
         else:
             return to_posestamped
 
-    def get_set_of_frontier_gridpos(self, nav, unknown):
-        f = set()
-        for nav_el in nav:
-            neighbors = getNeighbors(nav_el)
-            for n in neighbors:
-                if n in unknown:
-                    f.add(nav_el)
-                    break
-        return f
-
     def get_list_of_frontiers(self, set_of_frontier_gridpos):
         list_of_frontiers = []
         sofg = copy.deepcopy(set_of_frontier_gridpos)
@@ -205,6 +193,17 @@ class FrontierExplorer:
         ps.header = self.odom.header
         current_pose_stamped_in_map = self.tf_listener.transformPose('/map', fuck_the_time(ps))
         return current_pose_stamped_in_map
+
+
+def get_set_of_frontier_gridpos(nav, unknown):
+    f = set()
+    for nav_el in nav:
+        neighbors = getNeighbors(nav_el)
+        for n in neighbors:
+            if n in unknown:
+                f.add(nav_el)
+                break
+    return f
 
 
 def find_closest_gridpos(me, in_where):
