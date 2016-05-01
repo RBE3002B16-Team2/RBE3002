@@ -194,13 +194,17 @@ class FrontierExplorer:
         return cluster
 
     def get_my_gridpos(self):
+        current_pose_stamped_in_map = self.get_my_posestamped()
+        my_gridpos = pose2gridpos_og(current_pose_stamped_in_map.pose, self.og)
+        return my_gridpos
+
+    def get_my_posestamped(self):
         self.tf_listener.waitForTransform('map', 'odom', rospy.Time(0), rospy.Duration(10.0))
         ps = PoseStamped()
         ps.pose = self.odom.pose.pose
         ps.header = self.odom.header
         current_pose_stamped_in_map = self.tf_listener.transformPose('/map', fuck_the_time(ps))
-        my_gridpos = pose2gridpos_og(current_pose_stamped_in_map.pose, self.og)
-        return my_gridpos
+        return current_pose_stamped_in_map
 
 
 def find_closest_gridpos(me, in_where):

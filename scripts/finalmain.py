@@ -22,19 +22,32 @@ class Final3002:
         self.tfl = tf.TransformListener()
         self.fe = FrontierExplorer(tf_listener=self.tfl)
         self.move = MoveBaseThingy()
+        rospy.set_param('/move_base/recovery_behavior_enabled', True)
+        rospy.set_param('/move_base/clearing_rotation_enabled', True)
 
         self.next_goal_pub = rospy.Publisher("/next_goal", PoseStamped, queue_size=1)
 
     def explore(self):
         print 'start explore'
+        self.move.spin(self.fe.get_my_posestamped())
         points = self.fe.get_nav_goal_point_candidates()
+        # rospy.set_param('/move_base/recovery_behavior_enabled', False)
+        # rospy.set_param('/move_base/clearing_rotation_enabled', False)
+        give_up_count = 1
 
         while points:
             r = self.go_to_first_feasible_point(points)
             if r is False:
-                print "Got stuck. give up"
-                return
+                if give_up_count > 0:
+                    give_up_count -= 1
+                    print "Got stuck. retry"
+                    continue
+                else:
+                    print "Got stuck. give up"
+                    return
+            self.move.spin(self.fe.get_my_posestamped())
             points = self.fe.get_nav_goal_point_candidates()
+
 
         print 'done explore'
 
@@ -44,9 +57,9 @@ class Final3002:
             next_goal = point2pose(p)
             self.next_goal_pub.publish(next_goal)
             result = self.move.go_to(next_goal)
-            if result in [GoalStatus.SUCCEEDED, GoalStatus.ABORTED]:
+            if result in [GoalStatus.SUCCEEDED]:
                 return True
-            elif result in [GoalStatus.REJECTED]:
+            elif result in [GoalStatus.ABORTED, GoalStatus.REJECTED]:
                 continue
             else:
                 print "This should not happen. move_base result " + repr(result)
